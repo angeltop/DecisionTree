@@ -9,7 +9,7 @@ public class Sample {
 	};
 	
 	public void addValue(int index, Number value){
-		values[index] = value;
+		values[index-1] = value;
 	}
 	
 	public void setResult(boolean result){
@@ -22,5 +22,9 @@ public class Sample {
 	
 	public boolean getResult(){
 		return result;
+	}
+	
+	public int numberOfAttributes(){
+		return values.length;
 	}
 }

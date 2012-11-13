@@ -2,10 +2,15 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -76,11 +81,122 @@ public class MainClass {
 		
 		main.mainWindow.add(buttons, BorderLayout.PAGE_END);
 
-		main.mainWindow.setVisible(true);
+		main.mainWindow.setVisible(false);//////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////
+		try {
+			SampleSet instances = main.createInstancesX("trainingSet"+File.separator+"training.txt");
+			System.out.println("Attributes");
+			for(Iterator it = instances.attributes.iterator(); it.hasNext(); ){
+				Attribute curr = (Attribute) it.next();
+				System.out.print(curr.getId()+"\t");
+				if(!curr.isContinuous()){
+					CategoricalAttribute c = (CategoricalAttribute) curr;
+					for (int q=0; q<c.getValueSet().size(); q++){
+						System.out.print("Value "+c.getValueSet().get(q)+ "\t");
+					}
+				}
+										
+				System.out.println();
+			}
+			
+			for(Iterator it = instances.samples.iterator(); it.hasNext(); ){
+				Sample curr = (Sample) it.next();
+				for(int p=0; p<curr.numberOfAttributes(); p++)
+					System.out.print(curr.getValue(p)+"\t");
+				System.out.print(curr.getResult());
+				System.out.println();
+			}
+			System.exit(0);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//////////////////////////////////////////////////////////////////////////
 		main.mainWindow.pack();
 		main.mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	}
+	// read the given file and create our instance space X
+	
+	public SampleSet createInstancesX(String textFile) throws IOException{
+		
+		System.out.println("Create Instances");
+		File instances = new File(textFile);
+		
+		FileReader in = new FileReader(instances);
+		BufferedReader reader = new BufferedReader(in);	
+		SampleSet X = new SampleSet();
+		String firstline = reader.readLine();	// the first line gives us the type of the attribute
+		
+		if (firstline!=null){					
+			System.out.println(firstline);	
+			Pattern pat = Pattern.compile("\\d+\\:(n|c)\\s*");	
+			Matcher type = pat.matcher(firstline);
+			while(type.find()){
+				Attribute a = new Attribute() {
+				};
+				String attrType = type.group();
+				
+				if(attrType.contains("n"))	//if n it is a numerical attribute
+					a = new ContinuousAttribute(Integer.valueOf(attrType.substring(0, attrType.indexOf(":"))));
+				else		// if c then it is a categorical attribute
+					a = new CategoricalAttribute(Integer.valueOf(attrType.substring(0, attrType.indexOf(":"))));
+				X.attributes.add(a);
+			}
+		}
+		String line = reader.readLine();
+		
+		int attributeId = 0;
+		Pattern pattern = Pattern.compile("\\d+\\:((\\d+\\.\\d+)|\\d+)\\s*");
+		
+		while(line!=null){
+		//	System.out.println(line);
+			Sample instance = new Sample(X.attributes.size());
+			
+			Matcher att = pattern.matcher(line);
+			while(att.find()){
+				//System.out.print("Found");
+				String value = att.group();
+				attributeId = Integer.valueOf(value.substring(0, value.indexOf(":")));
+				value = value.substring(value.indexOf(":")+1);
+				value = value.replace(" ", "");
+				value = value.replace("\t", "");
+			
+				if(X.attributes.get(attributeId-1).getClass().equals(CategoricalAttribute.class)){
+					
+					instance.addValue(attributeId,  Integer.valueOf(value));
+					
+					Attribute attribute = (Attribute) X.attributes.get(attributeId-1);
+					if(attributeId==attribute.getId()){
+						((CategoricalAttribute)attribute).addValue(Integer.valueOf(value));
+						X.attributes.set(attributeId-1,attribute);
+					}else{
+						for(int i=0; i<X.attributes.size(); i++){
+							if(X.attributes.get(i).getId()==attributeId){
+								attribute = (CategoricalAttribute) X.attributes.get(i);
+								((CategoricalAttribute)attribute).addValue(Integer.valueOf(value));
+								X.attributes.set(i,attribute);
+							}
+								
+						}
+					}
+					
+				}
+				else
+					instance.addValue(attributeId, Double.valueOf(value));
+			}
+			if(line.endsWith("+"))
+				instance.setResult(true);
+			else
+				instance.setResult(false);
+			
+			X.samples.add(instance);
+			line = reader.readLine();
+		}
+		
+		return X;
+	}
+	
 
 	private class ButtonListener implements ActionListener{
 
@@ -111,22 +227,16 @@ public class MainClass {
 				prunning = false;
 			}else if(arg0.getActionCommand().equals("ok")){
 				mainWindow.setVisible(false);
-			// run TDIDT
-				
-				TDIDT tree = new TDIDT();
-				
+			
 				try {
 					
 					System.out.println(fileDir);
-					List instances =tree.createInstancesX(fileDir);
+					SampleSet instances = createInstancesX(fileDir);
 					
-					for(Iterator it = instances.iterator(); it.hasNext(); ){
-						LinkedList < String > curr = (LinkedList<String>) it.next();
-						for(Iterator<String> itt = curr.iterator(); itt.hasNext();){
-							System.out.print(itt.next()+"\t");
-						}
-						System.out.println();
-					}
+					//////////////////////////////// run TDIDT
+					
+					//////////////Output
+					System.exit(0);
 					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -138,9 +248,6 @@ public class MainClass {
 			}
 		
 		}
-		
-		
-		
-		
+				
 	}
 }

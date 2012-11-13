@@ -1,5 +1,5 @@
 
-public class Attribute {
+public abstract class Attribute {
 
 	int id;
 

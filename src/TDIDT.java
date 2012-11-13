@@ -141,55 +141,7 @@ public class TDIDT {
 		return splits;
 	}
 	
-	// read the given file and create our instance space X
-	
-	public List createInstancesX(String textFile) throws IOException{
-		
-		System.out.println("Create Instances");
-		File instances = new File(textFile);
-		
-		FileReader in = new FileReader(instances);
-		BufferedReader reader = new BufferedReader(in);	
-		X = new LinkedList<LinkedList>();
-		String firstline = reader.readLine();	// the first line gives us the type of the attribute
-		
-		if (firstline!=null){					// if c then it is a categorical attribute
-			System.out.println(firstline);
-			Attributes = new LinkedList<String>();	//if n it is a numerical attributte
-			int indx=firstline.indexOf(":");
-			while(indx>0){
-				Attributes.add((firstline.substring(indx+1, indx+1)));
-				firstline = firstline.substring(indx);
-				indx =firstline.indexOf(":");
-			}
-		}
-		String line = reader.readLine();
-		while(line!=null){
-		//	System.out.println(line);
-			List instance = new LinkedList<String>();
-			Pattern pattern = Pattern.compile("\\d+\\:(((\\d+\\.?\\d+)|\\w+))\\s+");
-			Matcher att = pattern.matcher(line);
-			while(att.find()){
-				//System.out.print("Found");
-				String value = att.group();
-				value = value.substring(value.indexOf(":")+1);
-				value = value.replace(" ", "");
-				value = value.replace("\t", "");
-				instance.add(value);
-			}
-			if(line.endsWith("+"))
-				instance.add("+");
-			else
-				instance.add("-");
-			
-			X.add(instance);
-			line = reader.readLine();
-		}
-		
-		//System.out.println("RETURN INS");
-		return X;
-	}
-	
+
 	private double log2(double value){
 		if(value==0)
 			return 0;

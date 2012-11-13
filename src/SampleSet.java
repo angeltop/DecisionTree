@@ -7,6 +7,10 @@ public class SampleSet {
 	List<Attribute> attributes;
 	List<Sample> samples;
 	
+	public SampleSet(){
+		attributes= new ArrayList<Attribute>();
+		samples= new ArrayList<Sample>();
+	}
 	public List<Attribute> getAttributes(){
 		return new ArrayList(attributes);
 	}
