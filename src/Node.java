@@ -1,8 +1,21 @@
-import java.util.List;
+
 
 public class Node{
 	
-		TestValue test;
-		SampleSet subSets;
+	private TestValue test;
+	private	SampleSet subSet;
 		
+	public void setTestValue(TestValue test){
+		this.test = test;
+	}
+	public void setSampleSet(SampleSet set){
+		subSet = set;
+	}
+	
+	public TestValue getTestValue(){
+		return test;
+	}
+	public SampleSet getSampleSet(){
+		return subSet;
+	}
 }
