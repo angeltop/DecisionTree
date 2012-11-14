@@ -14,11 +14,19 @@ public class Pruner {
 		return decisionTreeRoot;
 	}
 	
-	private void divideSamples(Node decisionNode, SampleSet nodeSet){
-		decisionNode.setSampleSet(nodeSet);
-		if(!decisionNode.isLeaf()){
-			for(Sample s: nodeSet.getSamples()){
-				Attribute decisionAttribute = ((InternalNode) decisionNode).getTestAttribute();
+	private void divideSamples(Node node, SampleSet nodeSet){
+		node.setSampleSet(nodeSet);
+		if(!node.isLeaf()){
+			InternalNode decisionNode = (InternalNode) node;
+			Attribute decisionAttribute = decisionNode.getTestAttribute();
+			if(decisionAttribute.isContinuous()){
+				//Do, when implementation of continuous test is clear
+			}
+			else{
+				Map<>
+				for(Node child : decisionNode.getChildren()){
+					
+				}
 			}
 		}
 	}
