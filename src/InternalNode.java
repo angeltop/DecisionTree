@@ -8,8 +8,12 @@ public class InternalNode extends Node{
 
 	private	List<Node> children;
 	
+	public InternalNode(){
+		children = new ArrayList<Node>();
+	}
+	
 	public List<Node> getChildren(){
-		return new ArrayList(children);
+		return new ArrayList<Node>(children);
 	}
 	public Attribute getTestAttribute(){
 		return testAttribute;
@@ -21,5 +25,10 @@ public class InternalNode extends Node{
 		if(!this.children.contains(child)){
 			this.children.add(child);
 		}
+	}
+	
+	@Override
+	public boolean isLeaf() {
+		return false;
 	}
 }

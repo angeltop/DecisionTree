@@ -9,4 +9,9 @@ public class Leaf extends Node {
 	public void setResult(boolean result){
 		this.result = result;
 	}
+	
+	@Override
+	public boolean isLeaf() {
+		return true;
+	}
 }
