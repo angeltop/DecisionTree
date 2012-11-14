@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class InternalNode extends Node{
 	}
 	
 	public List<Node> getChildren(){
-		return new ArrayList(children);
+		return new ArrayList<Node>(children);
 	}
 	public Attribute getTestAttribute(){
 		return testAttribute;
@@ -26,4 +27,10 @@ public class InternalNode extends Node{
 			this.children.add(child);
 		}
 	}
+	
+	@Override
+	public boolean isLeaf() {
+		return false;
+	}
 }
+
