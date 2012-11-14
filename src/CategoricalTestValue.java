@@ -2,7 +2,14 @@
 public class CategoricalTestValue implements TestValue {
 
 	private Attribute attribute;
+	private String value;
 	
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
+	}
 	public Attribute getAttribute(){
 		return attribute;
 	}
@@ -10,12 +17,11 @@ public class CategoricalTestValue implements TestValue {
 		attribute = a;
 	}
 	
+	
+	
 	@Override
 	public String printTest() {
-		// TODO Auto-generated method stub
-		if(!attribute.isContinuous())
-			return Integer.toString(attribute.getId());
-		return null;
+		return value;
 	}
 
 }
