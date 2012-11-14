@@ -1,5 +1,3 @@
-
-
 public class CategoricalTestValue extends TestValue {
 
 	private Attribute attribute;
@@ -18,4 +16,3 @@ public class CategoricalTestValue extends TestValue {
 	}
 
 }
-
