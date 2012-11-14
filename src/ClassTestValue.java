@@ -1,8 +1,12 @@
 
-public class ClassTestValue implements TestValue {
+public class ClassTestValue extends TestValue {
 
 	private	boolean result;
 	
+	public ClassTestValue(){
+		super();
+		
+	}
 	public boolean getResult(){
 		return result;
 	}
@@ -13,8 +17,8 @@ public class ClassTestValue implements TestValue {
 	public String printTest() {
 		// TODO Auto-generated method stub
 		if(result)
-			return "+";
-		return "-";
+			return  parentsTest+ "  +";
+		return parentsTest+"  -";
 	}
 
 }

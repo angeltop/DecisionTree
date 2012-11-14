@@ -8,11 +8,13 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,6 +37,7 @@ public class MainClass {
 	boolean prunning;
 	String fileDir;
 	JFrame mainWindow;
+	String outputText;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -100,6 +103,8 @@ public class MainClass {
 			main.printSampleSet(newSets[0]);
 			System.out.println("\n\n**********Testing Set***********\n\n\n");
 			main.printSampleSet(newSets[1]);
+			
+			main.createOutputFile( main.createOutputTestTree());
 			System.exit(0);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -254,7 +259,123 @@ public class MainClass {
 			System.out.println();
 		}
 		
+	}
+	
+	public int printNode(Node n, int id, int nextAvailableId){
 		
+		if(n.getClass().equals(InternalNode.class)){
+			
+			outputText = outputText + Integer.toString(id) + " "+ ((InternalNode)n).getTestValue().printTest() +" ";
+			int children = ((InternalNode)n).getChildren().size();
+			int givenId =nextAvailableId; 
+			int[] givenIds = new int[children];
+			int count=0;
+			while(givenId< nextAvailableId+children){
+				outputText = outputText + " "+ Integer.toString(givenId);
+				givenIds[count] = givenId;
+				count++;
+				givenId ++;
+			}
+			outputText = outputText+"\n";
+			nextAvailableId = givenId;
+			
+			for(int i =0; i<children; i++){
+				nextAvailableId = printNode(((InternalNode)n).getChildren().get(i), givenIds[i], nextAvailableId);
+			}
+			return nextAvailableId;
+		}else{
+			
+			outputText = outputText + Integer.toString(id) +" "+ n.getTestValue().printTest()  + "\n";
+			return nextAvailableId;
+		}
+	}
+
+		
+	public void createOutputFile(InternalNode tree){
+		
+		int nodeId = 1;
+		
+		outputText = new String();
+		outputText = "";
+		File output = new File("trainingSet"+File.separator+"output.txt");
+		
+		try {
+			FileWriter out = new FileWriter(output);
+			printNode(tree, nodeId, nodeId+1);
+			out.write(outputText);
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+
+	private InternalNode createOutputTestTree(){
+		
+		InternalNode root, child1, child2;
+		Node leaf1, leaf2, leaf3, leaf4, leaf5;
+		
+		leaf1 = new Node();
+		ClassTestValue tl1 = new ClassTestValue();
+		tl1.setResult(true);
+		tl1.setTest("1");
+		leaf1.setTestValue(tl1);
+		
+		leaf2 = new Node();
+		ClassTestValue tl2 = new ClassTestValue();
+		tl2.setResult(false);
+		tl2.setTest("2");		
+		leaf2.setTestValue(tl2);
+		
+		leaf3 = new Node();
+		ClassTestValue tl3 = new ClassTestValue();
+		tl3.setResult(true);
+		tl3.setTest("3");
+		leaf3.setTestValue(tl3);
+		
+		leaf4 = new Node();
+		ClassTestValue tl4 = new ClassTestValue();
+		tl4.setResult(true);
+		tl4.setTest("Yes");
+		leaf4.setTestValue(tl4);
+		
+		leaf5 = new Node();
+		ClassTestValue tl5 = new ClassTestValue();
+		tl5.setResult(true);
+		tl5.setTest("No");
+		leaf5.setTestValue(tl5);
+		
+		child1 = new InternalNode();
+		CategoricalTestValue tc1 = new CategoricalTestValue();
+		tc1.setAttribute(new CategoricalAttribute(1));
+		tc1.setTest("3");
+		child1.setTestValue(tc1);
+		((InternalNode)child1).addChild(leaf1);
+		((InternalNode)child1).addChild(leaf2);
+		((InternalNode)child1).addChild(leaf3);
+		
+		
+		child2 = new InternalNode();
+		ContinuousTestValue tc2 = new ContinuousTestValue();
+		tc2.setAttribute(new CategoricalAttribute(3));
+		tc2.setTest("5");
+		tc2.setSplitInfo("<5");
+		child2.setTestValue(tc2);
+		((InternalNode)child2).addChild(leaf4);
+		((InternalNode)child2).addChild(leaf5);
+
+		root = new InternalNode();
+		CategoricalTestValue value = new CategoricalTestValue();
+		value.setAttribute(new CategoricalAttribute(2));
+		value.setTest("root");
+		root.setTestValue(value);
+		
+		((InternalNode)root).addChild(child1);
+		((InternalNode)root).addChild(child2);
+		
+		return root;		
 	}
 	
 	private class ButtonListener implements ActionListener{

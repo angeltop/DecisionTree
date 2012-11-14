@@ -1,20 +1,21 @@
 
-public class CategoricalTestValue implements TestValue {
+public class CategoricalTestValue extends TestValue {
 
-	private Attribute attribute;
+
 	
-	public Attribute getAttribute(){
-		return attribute;
-	}
-	public void setAttribute(Attribute a){
-		attribute = a;
+	public CategoricalTestValue(){
+		super();
 	}
 	
-	@Override
+	public CategoricalTestValue(Attribute attribute, String test){
+		super(attribute, test);
+	}
+	
+
 	public String printTest() {
 		// TODO Auto-generated method stub
 		if(!attribute.isContinuous())
-			return Integer.toString(attribute.getId());
+			return  parentsTest +"  "+Integer.toString(attribute.getId());
 		return null;
 	}
 

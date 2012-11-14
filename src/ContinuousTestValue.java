@@ -1,29 +1,30 @@
 
-public class ContinuousTestValue implements TestValue {
+public class ContinuousTestValue extends TestValue {
 
-	private	Attribute attribute;
-	private String splitinfo;
+
+	private String splitinfo; // for example "< 20.0"
 	
-
-	public Attribute getAttribute(){
-		return attribute;
+	public ContinuousTestValue(){
+		super();
+		splitinfo = new String();
+	}
+	public ContinuousTestValue(Attribute attribute, String test, String splitInfo) {
+		super(attribute, test);
+		this.splitinfo = splitInfo;
+		// TODO Auto-generated constructor stub
 	}
 	
 	public String getSplitInfo(){
 		return new String(splitinfo);
 	}
 	
-	public void setAttribute(Attribute a){
-		attribute = a;
-	}
-	
 	public void setSplitInfo(String info){
 		this.splitinfo = info;
 	}
-	@Override
+
 	public String printTest() {
 		// TODO Auto-generated method stub
-		return Integer.toString(attribute.getId())+" "+ splitinfo;
+		return parentsTest+"  "+Integer.toString(attribute.getId())+ splitinfo;
 	}
 
 }

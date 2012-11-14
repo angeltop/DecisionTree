@@ -8,6 +8,10 @@ public class InternalNode extends Node{
 
 	private	List<Node> children;
 	
+	public InternalNode(){
+		children = new ArrayList<Node>();
+	}
+	
 	public List<Node> getChildren(){
 		return new ArrayList(children);
 	}
