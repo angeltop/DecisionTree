@@ -1,17 +1,23 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.management.monitor.Monitor;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -85,27 +91,15 @@ public class MainClass {
 		//////////////////////////////////////////////////////////////////////////////////////////
 		try {
 			SampleSet instances = main.createInstancesX("trainingSet"+File.separator+"training.txt");
-			System.out.println("Attributes");
-			for(Iterator it = instances.attributes.iterator(); it.hasNext(); ){
-				Attribute curr = (Attribute) it.next();
-				System.out.print(curr.getId()+"\t");
-				if(!curr.isContinuous()){
-					CategoricalAttribute c = (CategoricalAttribute) curr;
-					for (int q=0; q<c.getValueSet().size(); q++){
-						System.out.print("Value "+c.getValueSet().get(q)+ "\t");
-					}
-				}
-										
-				System.out.println();
-			}
 			
-			for(Iterator it = instances.samples.iterator(); it.hasNext(); ){
-				Sample curr = (Sample) it.next();
-				for(int p=0; p<curr.numberOfAttributes(); p++)
-					System.out.print(curr.getValue(p)+"\t");
-				System.out.print(curr.getResult());
-				System.out.println();
-			}
+			SampleSet[] newSets = new SampleSet[2];
+			newSets = main.randomSplitForPrunning(instances);
+			System.out.println("\n\n**********Sample Set***********\n\n\n");
+			main.printSampleSet(instances);
+			System.out.println("\n\n**********Training Set***********\n\n\n");
+			main.printSampleSet(newSets[0]);
+			System.out.println("\n\n**********Testing Set***********\n\n\n");
+			main.printSampleSet(newSets[1]);
 			System.exit(0);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -113,9 +107,15 @@ public class MainClass {
 		}
 		//////////////////////////////////////////////////////////////////////////
 		main.mainWindow.pack();
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		int width = main.mainWindow.getSize().width;
+		int height = main.mainWindow.getSize().height;
+		main.mainWindow.setLocation((dim.width-width)/2,(dim.height-height)/2);
 		main.mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	}
+	
+	
 	// read the given file and create our instance space X
 	
 	public SampleSet createInstancesX(String textFile) throws IOException{
@@ -198,6 +198,65 @@ public class MainClass {
 	}
 	
 
+	public SampleSet[] randomSplitForPrunning(SampleSet set){
+		
+		SampleSet[] newSets = new SampleSet[2];
+		newSets[0] = new SampleSet();
+		newSets[1] = new SampleSet();
+		
+		Random randomizedPick = new Random();
+
+		
+		int sizeOfTrainingSet = (int) Math.ceil(0.7*(set.samples.size()));
+		System.out.println("Training set size "+ sizeOfTrainingSet);
+		newSets[0].attributes = new ArrayList<Attribute>(set.attributes);
+		newSets[1].attributes = new ArrayList<Attribute>(set.attributes);
+		newSets[0].samples = new ArrayList<Sample>();
+		newSets[1].samples = new ArrayList<Sample>();
+		int size = 0;
+		while(size<sizeOfTrainingSet){
+			Sample s = set.samples.get(randomizedPick.nextInt(set.samples.size()));
+			if(!newSets[0].samples.contains(s)){
+				newSets[0].samples.add(s);
+				size++;
+			}
+		}
+		
+		SampleSet temp = new SampleSet();
+		temp.samples = new ArrayList<Sample>(set.samples);
+		temp.samples.removeAll(newSets[0].samples);
+		
+		newSets[1].samples = new ArrayList<Sample>(temp.samples);
+		
+		return newSets;
+	}
+	
+	private void printSampleSet(SampleSet instances){
+		System.out.println("Attributes");
+		for(Iterator it = instances.attributes.iterator(); it.hasNext(); ){
+			Attribute curr = (Attribute) it.next();
+			System.out.print(curr.getId()+"\t");
+			if(!curr.isContinuous()){
+				CategoricalAttribute c = (CategoricalAttribute) curr;
+				for (int q=0; q<c.getValueSet().size(); q++){
+					System.out.print("Value "+c.getValueSet().get(q)+ "\t");
+				}
+			}
+									
+			System.out.println();
+		}
+		
+		for(Iterator it = instances.samples.iterator(); it.hasNext(); ){
+			Sample curr = (Sample) it.next();
+			for(int p=1; p<=curr.numberOfAttributes(); p++)
+				System.out.print(curr.getValue(p)+"\t");
+			System.out.print(curr.getResult());
+			System.out.println();
+		}
+		
+		
+	}
+	
 	private class ButtonListener implements ActionListener{
 
 		public ButtonListener(){
@@ -232,8 +291,20 @@ public class MainClass {
 					
 					System.out.println(fileDir);
 					SampleSet instances = createInstancesX(fileDir);
+					if(prunning){
+						SampleSet[] newSets = randomSplitForPrunning(instances);
+									////////////////////////////////run TDIDT
+								//// with newSets[0]
+						
+						// prune on newSets[1]
+						
+						
+					}else{
+						
+						///////////////////// run TDIDT with instances
+						
+					}
 					
-					//////////////////////////////// run TDIDT
 					
 					//////////////Output
 					System.exit(0);
