@@ -1,6 +1,6 @@
 
 
-public class Node{
+public abstract class Node{
 	
 	private TestValue test;
 	private	SampleSet subSet;
@@ -18,4 +18,6 @@ public class Node{
 	public SampleSet getSampleSet(){
 		return subSet;
 	}
+	
+	public abstract boolean isLeaf();
 }

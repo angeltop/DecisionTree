@@ -3,7 +3,6 @@ public abstract class Attribute {
 
 	int id;
 
-	
 	public Attribute(){
 		id=0;
 
