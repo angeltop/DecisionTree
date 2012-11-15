@@ -66,11 +66,12 @@ public class Pruner {
 					break;
 				}
 			}else{
+				CategoricalAttribute decisionAttribute = (CategoricalAttribute) decisionNode.getTest().getTestAttribute();
 				for(Node child: decisionNode.getChildren()){
 					SampleSet childSet = new SampleSet();
 					childSet.setAtrributes(nodeSet.getAttributes());
 					for(Sample s: nodeSet.getSamples()){
-						if(s.getValue(nodeTest.getTestAttribute().getId()).equals(((CategoricalTestValue) child.getTestValue()).getValue())){
+						if(s.getValue(decisionAttribute.getId()).equals(decisionAttribute.addValue(((CategoricalTestValue) decisionNode.getTestValue()).getValue()))){
 							childSet.addSample(s);
 						}
 					}
