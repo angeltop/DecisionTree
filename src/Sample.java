@@ -1,6 +1,8 @@
 
 public class Sample {
-	
+	/* A sample is described by its attribute
+	 * value and its own class/result
+	 */
 	private Number[] values;
 	private boolean result;
 	

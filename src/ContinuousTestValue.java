@@ -1,6 +1,8 @@
 
 public class ContinuousTestValue implements TestValue {
-
+	/* If the parent attribute is Continuous/Numerical
+	 * we need a true or false regarding the split.
+	 */
 	boolean value;
 	
 	public ContinuousTestValue(boolean value){

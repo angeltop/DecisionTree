@@ -5,6 +5,11 @@ import java.util.List;
 
 public class InternalNode extends Node{
 	
+	/* In order to describe an internal
+	 * node of the tree we need the Test
+	 * for this node, which depends on the 
+	 * attribute type and the children nodes.
+	 */
 	private Test test;
 
 	private	List<Node> children;

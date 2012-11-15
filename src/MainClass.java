@@ -41,7 +41,8 @@ public class MainClass {
 	String outputText;
 	
 	public static void main(String[] args) {
-		// we create
+		/* We create the main window for this application
+		 */
 
 		MainClass main = new MainClass();
 		ButtonListener listener = main.new ButtonListener();
@@ -91,8 +92,8 @@ public class MainClass {
 		
 		main.mainWindow.add(buttons, BorderLayout.PAGE_END);
 
-		main.mainWindow.setVisible(false);//////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////////////////////
+		main.mainWindow.setVisible(false);//////////// SET TRUE
+		///////////////////////////////////////////////////////DELETE BEFORE SUBMITION
 		try {
 			main.fileDir = "trainingSet"+File.separator+"training.txt";
 			SampleSet instances = main.createInstancesX(main.fileDir);
@@ -123,8 +124,8 @@ public class MainClass {
 	}
 	
 	
-	// read the given file and create our instance space X
-	
+	/* This function reads the given file and create our instance space X
+	 */
 	public SampleSet createInstancesX(String textFile) throws IOException{
 		
 		System.out.println("Create Instances");
@@ -197,7 +198,7 @@ public class MainClass {
 								
 						}					}
 					instance.addValue(attributeId, indexOfValue); // we add the attribute's id 
-																				   // and it's value in the sample
+																  // and it's value in the sample
 					
 				}
 				else
@@ -215,8 +216,9 @@ public class MainClass {
 		return X;	// return the sample set
 	}
 	
-// this function is used for splitting the sample set into two sample sets
-// 70% percent used for training and 30% percent for pruning this 
+/* This function is used for splitting the sample set into two sample sets
+ * 70% percent used for training and 30% percent for pruning.
+ */ 
 	public SampleSet[] randomSplitForPrunning(SampleSet set){
 		
 		SampleSet[] newSets = new SampleSet[2];
@@ -224,10 +226,8 @@ public class MainClass {
 		newSets[1] = new SampleSet();
 		
 		Random randomizedPick = new Random();
-
-		
 		int sizeOfTrainingSet = (int) Math.ceil(0.7*(set.samples.size()));
-		System.out.println("Training set size "+ sizeOfTrainingSet);
+		
 		newSets[0].attributes = new ArrayList<Attribute>(set.attributes);
 		newSets[1].attributes = new ArrayList<Attribute>(set.attributes);
 		newSets[0].samples = new ArrayList<Sample>();
@@ -249,7 +249,7 @@ public class MainClass {
 		
 		return newSets;
 	}
-	
+	// DELETE BEFORE SUBMITION
 	private void printSampleSet(SampleSet instances){
 		System.out.println("Attributes");
 		for(Iterator it = instances.attributes.iterator(); it.hasNext(); ){
@@ -273,17 +273,21 @@ public class MainClass {
 			System.out.println();
 		}
 		
-	}
+	}/////////////////////////////////////////////////////////////////////////////////
 	
-	// this function creates the line that describes the attributes of the given node
-	// we call this function recursively in order to access all nodes. as id we give the id of the 
-	// current node and and as nextAvailable id we give the number that is available for the
-	// next node without id
+	/* This function creates the line that describes the attributes of the given node
+	 * we call this function recursively in order to access all nodes. As id we give the id of the 
+	 * current node and and as nextAvailable id we give the number that is available for the
+	 * next node without id.
+	 */
+	 
 	public int printNode(Node n, int id, int nextAvailableId){
 		
-		if(!n.isLeaf()){ // if we have an internal node
-						// we have to print the id, the the parent test, the attribute test and the
-						// children ids
+		if(!n.isLeaf()){ /* if we have an internal node
+						  * we have to print the id, the the parent test, the attribute test and the
+						  * children ids
+						  */
+						 
 			if(n.getTestValue()==null)
 				outputText = outputText + Integer.toString(id) + "\t"+ "root"+ "\t"+ ((InternalNode)n).getTest().printTest()+"\t";
 			else
@@ -314,8 +318,9 @@ public class MainClass {
 		}
 	}
 
-	// 	this function creates the output file for the given tree, input of this function is the
-	// root node
+	/* This function creates the output file for the given tree, input of this function is 
+	 * the root node.
+	 */
 	public void createOutputFile(InternalNode tree){
 		
 		int nodeId = 1;
@@ -326,8 +331,10 @@ public class MainClass {
 		File output = new File(parentFolder.getAbsolutePath()+File.separator+"output.txt");
 		
 		int i=1;
-		while(output.exists()){	// while the file exists we try to find an appropriate name for
-								// for our output file
+		/* while the file exists we try to find an appropriate name for
+		 * our output file
+		 */
+		while(output.exists()){
 			output = new File(parentFolder.getAbsolutePath()+File.separator+"output"+i+".txt");
 			i++;
 		}
@@ -338,13 +345,12 @@ public class MainClass {
 			out.close();
 			JOptionPane.showMessageDialog(mainWindow, "The output file is generated\n"+ output.getAbsolutePath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(mainWindow, e.getMessage());
 		}
 		
 	}
 	
-
+	// DELETE BEFORE SUBMITION
 	private InternalNode createOutputTestTree(){
 		
 		InternalNode root, child1, child2;
@@ -403,8 +409,11 @@ public class MainClass {
 		((InternalNode)root).addChild(child2);
 		
 		return root;		
-	}
+	}//////////////////////////////////////////////////////////
 	
+	/* This class implements the buttonlistener for our
+	 * window/frame
+	 */
 	private class ButtonListener implements ActionListener{
 
 		public ButtonListener(){
@@ -413,8 +422,6 @@ public class MainClass {
 		}
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO Auto-generated method stub
-			System.out.println(arg0.getActionCommand());
 			if(arg0.getActionCommand().equals("file")){
 
 				JFileChooser chooser = new JFileChooser();
@@ -436,8 +443,6 @@ public class MainClass {
 				mainWindow.setVisible(false);
 			
 				try {
-					
-					System.out.println(fileDir);
 					SampleSet instances = createInstancesX(fileDir);
 					if(pruning){
 						SampleSet[] newSets = randomSplitForPrunning(instances);
@@ -458,8 +463,10 @@ public class MainClass {
 					System.exit(0);
 					
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
+					JOptionPane.showMessageDialog(mainWindow, e.getMessage()+"\nPlease choose another file!");
+					mainWindow.setVisible(true);
+					
 				}
 			}else if (arg0.getActionCommand().equals("cancel")){
 				mainWindow.setVisible(false);

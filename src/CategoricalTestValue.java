@@ -1,5 +1,7 @@
 public class CategoricalTestValue implements TestValue {
-
+	/* If the parent has a Categorical attribute
+	 * we only need its value for the definition of TestValue
+	 */
 	protected String value;
 	
 	public CategoricalTestValue(String value){

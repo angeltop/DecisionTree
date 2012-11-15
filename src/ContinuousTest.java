@@ -1,6 +1,9 @@
 
 public class ContinuousTest extends Test {
-
+	/* If the attribute is numerical/continuous besides its id
+	 * we also need its split information, which is the type of the split
+	 * and the value of the split.
+	 */
 	private SplitType splitType;
 	private double splitValue;
 	

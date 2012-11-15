@@ -3,7 +3,9 @@ import java.util.List;
 
 
 public class SampleSet {
-	
+	/* Our SampleSet contains all the attributes and
+	 * all the Samples
+	 */
 	List<Attribute> attributes;
 	List<Sample> samples;
 	

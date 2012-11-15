@@ -1,6 +1,7 @@
 
 public class CategoricalTest extends Test {
-
+	/* If the attribute is categorical we need only its id
+	 */
 	public CategoricalTest(Attribute testAttribute) {
 		super(testAttribute);
 	}

@@ -1,10 +1,10 @@
 import java.util.Iterator;
-import java.util.List;
-
-
 
 public abstract class Node{
-	
+	/* In order to describe a Node we need a 
+	 * TestValue regarding the parent and
+	 * the sub-set of samples
+	 */
 	private TestValue testValue;
 	private	SampleSet subSet;
 		

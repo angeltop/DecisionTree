@@ -1,6 +1,9 @@
 
 public class Leaf extends Node {
 
+	/* In order to describe a Leaf
+	 * of the tree we need the result.
+	 */
 	public boolean result;
 	
 	public Leaf(boolean b){
