@@ -43,5 +43,33 @@ public class InternalNode extends Node{
 	public boolean isLeaf() {
 		return false;
 	}
+	public int printNode(int id, int nextAvailableId){
+		String outputText ="";
+		/* we have to print the id, the the parent test, the attribute test and the
+		 * children ids
+		 */
+						 
+		if(this.getTestValue()==null)
+			outputText = outputText + Integer.toString(id) + "\t"+ "root"+ "\t"+ this.getTest().printTest()+"\t";
+		else
+			outputText = outputText + Integer.toString(id) + "\t"+ this.getTestValue().printTestValue()+ "\t"+ this.getTest().printTest()+"\t";
+		int children = (this).getChildren().size();
+		int givenId =nextAvailableId; 
+		int[] givenIds = new int[children];
+		int count=0;
+		while(givenId< nextAvailableId+children){	// print the children ids
+			outputText = outputText + " "+ Integer.toString(givenId);
+			givenIds[count] = givenId;	// we keep the children ids in a local matrix, we will use them
+			count++;					// when we will print the children info
+			givenId ++;
+		}
+		outputText = outputText+"\n";
+		nextAvailableId = givenId;
+			
+		for(int i =0; i<children; i++){ // iterate in children and print its info
+			nextAvailableId = this.getChildren().get(i).printNode(givenIds[i], nextAvailableId);
+		}
+		return nextAvailableId;
+	}
 }
 

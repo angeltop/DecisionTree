@@ -36,9 +36,8 @@ public class MainClass {
 	 * @param args
 	 */
 	boolean pruning;
-	String fileDir;
-	JFrame mainWindow;
-	String outputText;
+	static String fileDir;
+	static JFrame mainWindow;
 	
 	public static void main(String[] args) {
 		/* We create the main window for this application
@@ -107,7 +106,13 @@ public class MainClass {
 			System.out.println("\n\n**********Testing Set***********\n\n\n");
 			main.printSampleSet(newSets[1]);
 			
-			main.createOutputFile( main.createOutputTestTree());
+			try{
+				File output = main.createOutputTestTree().createOutputFile(fileDir);
+				JOptionPane.showMessageDialog(mainWindow, "The output file is generated\n"+ output.getAbsolutePath());
+			}
+			catch (IOException e) {
+				JOptionPane.showMessageDialog(mainWindow, e.getMessage());
+			}
 			System.exit(0);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -281,74 +286,10 @@ public class MainClass {
 	 * next node without id.
 	 */
 	 
-	public int printNode(Node n, int id, int nextAvailableId){
-		
-		if(!n.isLeaf()){ /* if we have an internal node
-						  * we have to print the id, the the parent test, the attribute test and the
-						  * children ids
-						  */
-						 
-			if(n.getTestValue()==null)
-				outputText = outputText + Integer.toString(id) + "\t"+ "root"+ "\t"+ ((InternalNode)n).getTest().printTest()+"\t";
-			else
-				outputText = outputText + Integer.toString(id) + "\t"+ ((InternalNode)n).getTestValue().printTestValue()+ "\t"+ ((InternalNode)n).getTest().printTest()+"\t";
-			int children = ((InternalNode)n).getChildren().size();
-			int givenId =nextAvailableId; 
-			int[] givenIds = new int[children];
-			int count=0;
-			while(givenId< nextAvailableId+children){	// print the children ids
-				outputText = outputText + " "+ Integer.toString(givenId);
-				givenIds[count] = givenId;	// we keep the children ids in a local matrix, we will use them
-				count++;					// when we will print the children info
-				givenId ++;
-			}
-			outputText = outputText+"\n";
-			nextAvailableId = givenId;
-			
-			for(int i =0; i<children; i++){ // iterate in children and print its info
-				nextAvailableId = printNode(((InternalNode)n).getChildren().get(i), givenIds[i], nextAvailableId);
-			}
-			return nextAvailableId;
-		}else{ //if we have a leaf we have to print the node id, the parent test and the result
-			if(((Leaf)n).result)			
-				outputText = outputText + Integer.toString(id) +"\t"+ ((Leaf)n).getTestValue().printTestValue()  +"\t+\n";
-			else
-				outputText = outputText + Integer.toString(id) +"\t"+ ((Leaf)n).getTestValue().printTestValue()  +"\t-\n";
-			return nextAvailableId; // the next available id is the same as before since no new node is found
-		}
-	}
+	
 
-	/* This function creates the output file for the given tree, input of this function is 
-	 * the root node.
-	 */
-	public void createOutputFile(InternalNode tree){
-		
-		int nodeId = 1;
-		
-		outputText = new String();
-		outputText = "";
-		File parentFolder = new File(fileDir).getParentFile();
-		File output = new File(parentFolder.getAbsolutePath()+File.separator+"output.txt");
-		
-		int i=1;
-		/* while the file exists we try to find an appropriate name for
-		 * our output file
-		 */
-		while(output.exists()){
-			output = new File(parentFolder.getAbsolutePath()+File.separator+"output"+i+".txt");
-			i++;
-		}
-		try {
-			FileWriter out = new FileWriter(output);
-			printNode(tree, nodeId, nodeId+1);
-			out.write(outputText);
-			out.close();
-			JOptionPane.showMessageDialog(mainWindow, "The output file is generated\n"+ output.getAbsolutePath());
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(mainWindow, e.getMessage());
-		}
-		
-	}
+
+	
 	
 	// DELETE BEFORE SUBMITION
 	private InternalNode createOutputTestTree(){

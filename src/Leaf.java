@@ -21,4 +21,15 @@ public class Leaf extends Node {
 	public boolean isLeaf() {
 		return true;
 	}
+
+	@Override
+	public int printNode(
+			int id, int nextAvailableId) {
+		String outputText;
+		if(this.result)			
+			outputText = Integer.toString(id) +"\t"+ this.getTestValue().printTestValue()  +"\t+\n";
+		else
+			outputText = Integer.toString(id) +"\t"+ this.getTestValue().printTestValue()  +"\t-\n";
+		return nextAvailableId; // the next available id is the same as before since no new node is found
+	}
 }

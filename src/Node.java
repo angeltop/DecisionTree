@@ -1,4 +1,9 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Iterator;
+
+import javax.swing.JOptionPane;
 
 public abstract class Node{
 	/* In order to describe a Node we need a 
@@ -54,5 +59,32 @@ public abstract class Node{
 	
 	public abstract boolean isLeaf();
     
+	/* This function creates the output file for the given tree, input of this function is 
+	 * the root node.
+	 */
+	public File createOutputFile(String fileDir) throws IOException{
+		
+		int nodeId = 1;
+		
+		String outputText = new String("");
+		File parentFolder = new File(fileDir).getParentFile();
+		File output = new File(parentFolder.getAbsolutePath()+File.separator+"output.txt");
+		
+		int i=1;
+		/* while the file exists we try to find an appropriate name for
+		 * our output file
+		 */
+		while(output.exists()){
+			output = new File(parentFolder.getAbsolutePath()+File.separator+"output"+i+".txt");
+			i++;
+		}
+		FileWriter out = new FileWriter(output);
+		this.printNode(nodeId, nodeId+1);
+		out.write(outputText);
+		out.close();
+		return output;
+		
+	}
+	public abstract int printNode(int id, int nextAvailableId);
 	
 }
