@@ -358,10 +358,10 @@ public class MainClass {
 		
 		
 		child2 = new InternalNode();
-		ContinuousTestValue tc2 = new ContinuousTestValue();
+		ContinuousTest tc2 = new ContinuousTest();
 		tc2.setAttribute(new CategoricalAttribute(3));
 		tc2.setTest("5");
-		tc2.setSplitType(ContinuousTestValue.SplitType.LESS);
+		tc2.setSplitType(ContinuousTest.SplitType.LESS);
 		tc2.setSplitValue(5.0);
 		child2.setTestValue(tc2);
 		((InternalNode)child2).addChild(leaf4);

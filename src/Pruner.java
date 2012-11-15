@@ -44,15 +44,12 @@ public class Pruner {
 			for(Node child: decisionNode.getChildren()){
 				newChildren.add(pruneSubtree(child));
 			}
-			for(Node child: newChildren){
-				decisionNode.addChild(child);
-			}
+			decisionNode.setChildren(newChildren);
 			if(getNodeSuccessProbability(decisionNode)>getSuccessProbability(decisionNode)){
 				Leaf replacementLeaf = new Leaf();
 				replacementLeaf.setSampleSet(decisionNode.getSampleSet());
-				ClassTestValue leafResult = new ClassTestValue();
-				leafResult.setResult(getMajorityClass(decisionNode.getSampleSet()));
-				replacementLeaf.setTestValue(leafResult);
+				replacementLeaf.setResult(getMajorityClass(decisionNode.getSampleSet()));
+				replacementLeaf.setTestValue(node.getTestValue());
 				return replacementLeaf;
 			}
 			else return decisionNode;

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class InternalNode extends Node{
 	
-	private Attribute testAttribute;
+	private Test test;
 
 	private	List<Node> children;
 	
@@ -16,18 +16,24 @@ public class InternalNode extends Node{
 	public List<Node> getChildren(){
 		return new ArrayList<Node>(children);
 	}
-	public Attribute getTestAttribute(){
-		return testAttribute;
-	}
-	public void setAttribute(Attribute a){
-		testAttribute = a;
-	}
 	public void addChild(Node child){
 		if(!this.children.contains(child)){
 			this.children.add(child);
 		}
 	}
 	
+	public Test getTest() {
+		return test;
+	}
+
+	public void setTest(Test test) {
+		this.test = test;
+	}
+
+	public void setChildren(List<Node> children) {
+		this.children = children;
+	}
+
 	@Override
 	public boolean isLeaf() {
 		return false;

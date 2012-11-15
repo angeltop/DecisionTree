@@ -1,22 +1,21 @@
 import java.util.List;
-import java.util.ListIterator;
 
 
 
 public abstract class Node{
 	
-	private TestValue test;
+	private TestValue testValue;
 	private	SampleSet subSet;
 		
 	public void setTestValue(TestValue test){
-		this.test = test;
+		this.testValue = test;
 	}
 	public void setSampleSet(SampleSet set){
 		subSet = set;
 	}
 	
 	public TestValue getTestValue(){
-		return test;
+		return testValue;
 	}
 	public SampleSet getSampleSet(){
 		return subSet;

@@ -1,18 +1,13 @@
-public class CategoricalTestValue extends TestValue {
+public class CategoricalTestValue implements TestValue {
 
-	private Attribute attribute;
-
-	public Attribute getAttribute(){
-		return attribute;
-	}
-	public void setAttribute(Attribute a){
-		attribute = a;
-	}
+	protected String value;
 	
+	public CategoricalTestValue(String value){
+		this.value = value;
+	}
 	
 	@Override
-	public String printTest() {
-		return parentsTest+"  "+ Integer.toString(attribute.getId()) + "  ";
+	public String printTestValue() {
+		return value;
 	}
-
 }
