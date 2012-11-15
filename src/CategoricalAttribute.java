@@ -38,13 +38,7 @@ public class CategoricalAttribute extends Attribute {
 		}
 		//compute Entropy.
 		for(Integer v: valueSet){
-			entropy += ((neg[v]+pos[v])/set.samples.size())
-							*(-(java.lang.Math.log(neg[v]/(neg[v]+pos[v]))*neg[v])
-									/(java.lang.Math.log(2.0)*(neg[v]+pos[v]))
-								-(java.lang.Math.log(pos[v]/(pos[v]+neg[v])*pos[v])
-										/(java.lang.Math.log(2.0)*(neg[v]+pos[v]))
-							)
-						);
+			entropy += ((pos[v]+neg[v])/set.getSamples().size())*super.computeEntropy(neg[v], pos[v]);
 		}
 		return entropy;
 	}

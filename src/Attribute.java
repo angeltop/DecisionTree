@@ -26,4 +26,12 @@ public abstract class Attribute {
 	public double computeEntropy(SampleSet set){
 		return 5000; //Very bad Entropy.
 	}
+	
+	protected double computeEntropy(int neg, int pos){
+		double entropy =0.0;
+		int total = neg+pos;
+		entropy = neg/total*(java.lang.Math.log(total/neg)/java.lang.Math.log(2));
+		entropy = pos/total*(java.lang.Math.log(total/pos)/java.lang.Math.log(2));
+		return entropy;
+	}
 }
