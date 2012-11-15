@@ -39,7 +39,7 @@ public class Pruner {
 	private void divideSamples(Node node, SampleSet nodeSet){
 		/*
 		 * The first step is to assign the given set to the top node of the subtree.
-		 * If it is a leaf, we're down, else we have to divide the samples into the
+		 * If it is a leaf, we're done, else we have to divide the samples into the
 		 * correct sampleSets for the subtrees.
 		 */
 		node.setSampleSet(nodeSet);
@@ -145,9 +145,11 @@ public class Pruner {
 	 * if the current top node were treated as a leaf.
 	 * If treating it as a leaf would increase the success probability an according new Leaf
 	 * is created and returned as the pruned subtree.
+	 * If we are at a leaf, we simply check if the label fits the pruning set.
 	 */
 	private Node pruneSubtree(Node node) {
 		if(!node.isLeaf()){
+			((Leaf) node).setResult(getMajorityClass(node.getSampleSet()));
 			return node;
 		}else{
 			InternalNode decisionNode = (InternalNode) node;
@@ -187,6 +189,13 @@ public class Pruner {
 		}
 	}
 	
+	/*
+	 * This function returns the success probability of a node, if it were a leaf.
+	 * The number of + and - classified samples are counted and the probabilities calculated.
+	 * If the node actually is a leaf, the probability of the labeled class is returned.
+	 * If is is not, the bigger probability is returned, since that is the label,
+	 * since the optimal choice would be made for a leaf based on that node.
+	 */
 	public double getNodeSuccessProbability(Node node) {
 		double trueCount=0;
 		double falseCount=0;
@@ -213,6 +222,10 @@ public class Pruner {
 		}
 	}
 	
+	/*
+	 * This function returns the class label which is more frequent
+	 * in the given sample set.
+	 */
 	public boolean getMajorityClass(SampleSet samples){
 		int trueCount=0;
 		int falseCount=0;
