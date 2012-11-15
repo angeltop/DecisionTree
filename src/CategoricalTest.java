@@ -7,7 +7,10 @@ public class CategoricalTest extends Test {
 
 	@Override
 	public String printTest() {
-		return Integer.toString(testAttribute.getId());
+		if(testAttribute!=null)
+			return Integer.toString(testAttribute.getId());
+		return "null";
+		
 	}
 
 }

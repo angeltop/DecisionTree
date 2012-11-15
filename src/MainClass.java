@@ -25,6 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
@@ -93,7 +94,8 @@ public class MainClass {
 		main.mainWindow.setVisible(false);//////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////
 		try {
-			SampleSet instances = main.createInstancesX("trainingSet"+File.separator+"training.txt");
+			main.fileDir = "trainingSet"+File.separator+"training.txt";
+			SampleSet instances = main.createInstancesX(main.fileDir);
 			
 			SampleSet[] newSets = new SampleSet[2];
 			newSets = main.randomSplitForPrunning(instances);
@@ -135,7 +137,7 @@ public class MainClass {
 		
 		if (firstline!=null){					
 			System.out.println(firstline);	
-			Pattern pat = Pattern.compile("\\d+\\:(n|c)\\s*");	
+			Pattern pat = Pattern.compile("\\d+\\:(n|c)\\s*");	// d+ for the id of the attribute, n or c for the type of attribute
 			Matcher type = pat.matcher(firstline);
 			while(type.find()){
 				Attribute a = new Attribute() {
@@ -155,12 +157,10 @@ public class MainClass {
 		Pattern pattern = Pattern.compile("\\d+\\:((\\d+\\.\\d+)|\\d+)\\s*");
 		
 		while(line!=null){
-		//	System.out.println(line);
 			Sample instance = new Sample(X.attributes.size());
 			
 			Matcher att = pattern.matcher(line);
 			while(att.find()){
-				//System.out.print("Found");
 				String value = att.group();
 				attributeId = Integer.valueOf(value.substring(0, value.indexOf(":")));
 				value = value.substring(value.indexOf(":")+1);
@@ -265,7 +265,7 @@ public class MainClass {
 		
 		if(n.getClass().equals(InternalNode.class)){
 			
-			outputText = outputText + Integer.toString(id) + " "+ ((InternalNode)n).getTestValue().printTest();
+			outputText = outputText + Integer.toString(id) + "\t"+ ((InternalNode)n).getTestValue().printTestValue()+ "\t"+ ((InternalNode)n).getTest().printTest()+"\t";
 			int children = ((InternalNode)n).getChildren().size();
 			int givenId =nextAvailableId; 
 			int[] givenIds = new int[children];
@@ -284,8 +284,10 @@ public class MainClass {
 			}
 			return nextAvailableId;
 		}else{
-			
-			outputText = outputText + Integer.toString(id) +" "+ n.getTestValue().printTest()  + "\n";
+			if(((Leaf)n).result)			
+				outputText = outputText + Integer.toString(id) +"\t"+ ((Leaf)n).getTestValue().printTestValue()  +"\t+\n";
+			else
+				outputText = outputText + Integer.toString(id) +"\t"+ ((Leaf)n).getTestValue().printTestValue()  +"\t-\n";
 			return nextAvailableId;
 		}
 	}
@@ -297,13 +299,20 @@ public class MainClass {
 		
 		outputText = new String();
 		outputText = "";
-		File output = new File("trainingSet"+File.separator+"output.txt");
+		File parentFolder = new File(fileDir).getParentFile();
+		File output = new File(parentFolder.getAbsolutePath()+File.separator+"output.txt");
 		
+		int i=1;
+		while(output.exists()){
+			output = new File(parentFolder.getAbsolutePath()+File.separator+"output"+i+".txt");
+			i++;
+		}
 		try {
 			FileWriter out = new FileWriter(output);
 			printNode(tree, nodeId, nodeId+1);
 			out.write(outputText);
 			out.close();
+			JOptionPane.showMessageDialog(mainWindow, "The output file is generated\n"+ output.getAbsolutePath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -315,64 +324,57 @@ public class MainClass {
 	private InternalNode createOutputTestTree(){
 		
 		InternalNode root, child1, child2;
-		Node leaf1, leaf2, leaf3, leaf4, leaf5;
+		Leaf leaf1, leaf2, leaf3, leaf4, leaf5;
 		
 		leaf1 = new Leaf();
-		ClassTestValue tl1 = new ClassTestValue();
-		tl1.setResult(true);
-		tl1.setTest("1");
+		CategoricalTestValue tl1 = new CategoricalTestValue("1");
+		leaf1.setResult(true);
 		leaf1.setTestValue(tl1);
 		
 		leaf2 = new Leaf();
-		ClassTestValue tl2 = new ClassTestValue();
-		tl2.setResult(false);
-		tl2.setTest("2");		
+		CategoricalTestValue tl2 = new CategoricalTestValue("2");
+		leaf2.setResult(false);	
 		leaf2.setTestValue(tl2);
 		
 		leaf3 = new Leaf();
-		ClassTestValue tl3 = new ClassTestValue();
-		tl3.setResult(true);
-		tl3.setTest("3");
+		CategoricalTestValue tl3 = new CategoricalTestValue("3");
+		leaf3.setResult(true);
 		leaf3.setTestValue(tl3);
 		
 		leaf4 = new Leaf();
-		ClassTestValue tl4 = new ClassTestValue();
-		tl4.setResult(true);
-		tl4.setTest("Yes");
+		ContinuousTestValue tl4= new ContinuousTestValue(true);
+		leaf4.setResult(true);
 		leaf4.setTestValue(tl4);
 		
 		leaf5 = new Leaf();
-		ClassTestValue tl5 = new ClassTestValue();
-		tl5.setResult(true);
-		tl5.setTest("No");
+		ContinuousTestValue tl5 = new ContinuousTestValue(false);
+		leaf5.setResult(true);
 		leaf5.setTestValue(tl5);
 		
 		child1 = new InternalNode();
-		CategoricalTestValue tc1 = new CategoricalTestValue();
-		tc1.setAttribute(new CategoricalAttribute(1));
-		tc1.setTest("3");
+		CategoricalTestValue tc1 = new CategoricalTestValue("3");
 		child1.setTestValue(tc1);
+		
+		CategoricalTest tc11 = new CategoricalTest(new CategoricalAttribute(3));
+		child1.setTest(tc11);
 		((InternalNode)child1).addChild(leaf1);
 		((InternalNode)child1).addChild(leaf2);
 		((InternalNode)child1).addChild(leaf3);
 		
 		
 		child2 = new InternalNode();
-		ContinuousTest tc2 = new ContinuousTest();
-		tc2.setAttribute(new CategoricalAttribute(3));
-		tc2.setTest("5");
-		tc2.setSplitType(ContinuousTest.SplitType.LESS);
-		tc2.setSplitValue(5.0);
+		CategoricalTestValue tc2 = new CategoricalTestValue("5");
+		ContinuousTest tc22 = new ContinuousTest(new ContinuousAttribute(1), ContinuousTest.SplitType.LESS, 5.05);
+		child2.setTest(tc22);
 		child2.setTestValue(tc2);
 		((InternalNode)child2).addChild(leaf4);
 		((InternalNode)child2).addChild(leaf5);
 
 		root = new InternalNode();
-		CategoricalTestValue value = new CategoricalTestValue();
-		value.setAttribute(new CategoricalAttribute(2));
-		value.setTest("root");
+		CategoricalTestValue value = new CategoricalTestValue("root");
+		CategoricalTest troot =  new CategoricalTest(new CategoricalAttribute(2));
 		root.setTestValue(value);
-		
+		root.setTest(troot);
 		((InternalNode)root).addChild(child1);
 		((InternalNode)root).addChild(child2);
 		
