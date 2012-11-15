@@ -22,4 +22,8 @@ public abstract class Attribute {
 	public void setId(int id){
 		this.id = id;
 	}
+	
+	public double computeEntropy(SampleSet set){
+		return 5000; //Very bad Entropy.
+	}
 }
