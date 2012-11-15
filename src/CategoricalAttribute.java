@@ -20,8 +20,10 @@ public class CategoricalAttribute extends Attribute {
 		return new ArrayList<String>(valueSet);
 	}
 	
-	
-	int addValue(String newValue){
+	public String getValue(int i) {
+		return valueSet.get(i);
+	}
+	public int addValue(String newValue){
 		if(!valueSet.contains(newValue)){
 			valueSet.add(newValue);
 			return (valueSet.size()-1);

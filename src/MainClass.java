@@ -35,13 +35,13 @@ public class MainClass {
 	/**
 	 * @param args
 	 */
-	boolean prunning;
+	boolean pruning;
 	String fileDir;
 	JFrame mainWindow;
 	String outputText;
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		// we create
 
 		MainClass main = new MainClass();
 		ButtonListener listener = main.new ButtonListener();
@@ -61,7 +61,7 @@ public class MainClass {
 		JRadioButton yes = new JRadioButton("Yes",true);
 		yes.setActionCommand("yes");
 		yes.addActionListener(listener);
-		main.prunning = true;
+		main.pruning = true;
 		JRadioButton no = new JRadioButton("No", false);
 		no.setActionCommand("no");
 		ButtonGroup gr = new ButtonGroup();
@@ -147,13 +147,22 @@ public class MainClass {
 					a = new ContinuousAttribute(Integer.valueOf(attrType.substring(0, attrType.indexOf(":"))));
 				else		// if c then it is a categorical attribute
 					a = new CategoricalAttribute(Integer.valueOf(attrType.substring(0, attrType.indexOf(":"))));
+		
+				for(int i =0; i<X.attributes.size(); i++){	// we check if the attribute id already exists in our data set
+					if(X.attributes.get(i).getId()==a.getId()){
+						JOptionPane.showMessageDialog(mainWindow, "Duplicated attribute id, unacceptable input");
+						System.exit(0);
+					}
+				}
+					
 				X.attributes.add(a);
 			}
 		}
 		String line = reader.readLine();
 		
-		int attributeId = 0;
-		Pattern pattern = Pattern.compile("\\d+\\:((\\d+\\.\\d+)|\\d+|(\\w+))\\s*");
+		int attributeId = 0;// d+ for the attribute id, the rest for its value in this sample. It can either be
+							// an number +/- d+.d+ or +/-d+  or has a name sunny or very-cloudy w+-?w+
+		Pattern pattern = Pattern.compile("\\d+\\:[\\+\\-]?((\\d+\\.\\d+)|\\d+|(\\w+-?\\w+))\\s*");
 		
 		while(line!=null){
 			Sample instance = new Sample(X.attributes.size());
@@ -164,46 +173,50 @@ public class MainClass {
 				attributeId = Integer.valueOf(value.substring(0, value.indexOf(":")));
 				value = value.substring(value.indexOf(":")+1);
 				value = value.replace(" ", "");
-				value = value.replace("\t", "");
+				value = value.replace("\t", "");// we ignore the empty spaces
 			
 				if(X.attributes.get(attributeId-1).getClass().equals(CategoricalAttribute.class)){
 					
 					Attribute attribute = (Attribute) X.attributes.get(attributeId-1);
 					if(attributeId==attribute.getId()){
+						// add value returns the index of the value's insertion in the matrix
 						indexOfValue=((CategoricalAttribute)attribute).addValue(value);	
 						System.out.println("Index of "+ value +" is "+ indexOfValue);
 
-						X.attributes.set(attributeId-1,attribute);
+						X.attributes.set(attributeId-1,attribute); // we place back the updated attribute
 						
 					}else{
 						for(int i=0; i<X.attributes.size(); i++){
 							if(X.attributes.get(i).getId()==attributeId){
 								attribute = (CategoricalAttribute) X.attributes.get(i);
+								// add value returns the index of the value's insertion in the matrix
 								indexOfValue = ((CategoricalAttribute)attribute).addValue(value);
-								X.attributes.set(i,attribute);
+								X.attributes.set(i,attribute); // we place back the updated attribute
 								break;
 							}
 								
 						}					}
-					instance.addValue(attributeId, Integer.valueOf(indexOfValue)); // 
+					instance.addValue(attributeId, indexOfValue); // we add the attribute's id 
+																				   // and it's value in the sample
 					
 				}
 				else
-					instance.addValue(attributeId, Double.valueOf(value));
+					instance.addValue(attributeId, Double.valueOf(value));// we add the attribute's id 
 			}
-			if(line.endsWith("+"))
+			if(line.endsWith("+"))	// we add true as result if we find a +
 				instance.setResult(true);
-			else
+			else					// otherwise we add false as result
 				instance.setResult(false);
 			
 			X.samples.add(instance);
-			line = reader.readLine();
+			line = reader.readLine();	// continue reading the file line-by-line
 		}
 		
-		return X;
+		return X;	// return the sample set
 	}
 	
-
+// this function is used for splitting the sample set into two sample sets
+// 70% percent used for training and 30% percent for pruning this 
 	public SampleSet[] randomSplitForPrunning(SampleSet set){
 		
 		SampleSet[] newSets = new SampleSet[2];
@@ -262,38 +275,47 @@ public class MainClass {
 		
 	}
 	
+	// this function creates the line that describes the attributes of the given node
+	// we call this function recursively in order to access all nodes. as id we give the id of the 
+	// current node and and as nextAvailable id we give the number that is available for the
+	// next node without id
 	public int printNode(Node n, int id, int nextAvailableId){
 		
-		if(n.getClass().equals(InternalNode.class)){
-			
-			outputText = outputText + Integer.toString(id) + "\t"+ ((InternalNode)n).getTestValue().printTestValue()+ "\t"+ ((InternalNode)n).getTest().printTest()+"\t";
+		if(!n.isLeaf()){ // if we have an internal node
+						// we have to print the id, the the parent test, the attribute test and the
+						// children ids
+			if(n.getTestValue()==null)
+				outputText = outputText + Integer.toString(id) + "\t"+ "root"+ "\t"+ ((InternalNode)n).getTest().printTest()+"\t";
+			else
+				outputText = outputText + Integer.toString(id) + "\t"+ ((InternalNode)n).getTestValue().printTestValue()+ "\t"+ ((InternalNode)n).getTest().printTest()+"\t";
 			int children = ((InternalNode)n).getChildren().size();
 			int givenId =nextAvailableId; 
 			int[] givenIds = new int[children];
 			int count=0;
-			while(givenId< nextAvailableId+children){
+			while(givenId< nextAvailableId+children){	// print the children ids
 				outputText = outputText + " "+ Integer.toString(givenId);
-				givenIds[count] = givenId;
-				count++;
+				givenIds[count] = givenId;	// we keep the children ids in a local matrix, we will use them
+				count++;					// when we will print the children info
 				givenId ++;
 			}
 			outputText = outputText+"\n";
 			nextAvailableId = givenId;
 			
-			for(int i =0; i<children; i++){
+			for(int i =0; i<children; i++){ // iterate in children and print its info
 				nextAvailableId = printNode(((InternalNode)n).getChildren().get(i), givenIds[i], nextAvailableId);
 			}
 			return nextAvailableId;
-		}else{
+		}else{ //if we have a leaf we have to print the node id, the parent test and the result
 			if(((Leaf)n).result)			
 				outputText = outputText + Integer.toString(id) +"\t"+ ((Leaf)n).getTestValue().printTestValue()  +"\t+\n";
 			else
 				outputText = outputText + Integer.toString(id) +"\t"+ ((Leaf)n).getTestValue().printTestValue()  +"\t-\n";
-			return nextAvailableId;
+			return nextAvailableId; // the next available id is the same as before since no new node is found
 		}
 	}
 
-		
+	// 	this function creates the output file for the given tree, input of this function is the
+	// root node
 	public void createOutputFile(InternalNode tree){
 		
 		int nodeId = 1;
@@ -304,7 +326,8 @@ public class MainClass {
 		File output = new File(parentFolder.getAbsolutePath()+File.separator+"output.txt");
 		
 		int i=1;
-		while(output.exists()){
+		while(output.exists()){	// while the file exists we try to find an appropriate name for
+								// for our output file
 			output = new File(parentFolder.getAbsolutePath()+File.separator+"output"+i+".txt");
 			i++;
 		}
@@ -372,9 +395,9 @@ public class MainClass {
 		((InternalNode)child2).addChild(leaf5);
 
 		root = new InternalNode();
-		CategoricalTestValue value = new CategoricalTestValue("root");
+		
 		CategoricalTest troot =  new CategoricalTest(new CategoricalAttribute(2));
-		root.setTestValue(value);
+		
 		root.setTest(troot);
 		((InternalNode)root).addChild(child1);
 		((InternalNode)root).addChild(child2);
@@ -406,9 +429,9 @@ public class MainClass {
 				}
 			}
 			else if (arg0.getActionCommand().equals("yes")){
-				prunning = true;
+				pruning = true;
 			}else if (arg0.getActionCommand().equals("no")){
-				prunning = false;
+				pruning = false;
 			}else if(arg0.getActionCommand().equals("ok")){
 				mainWindow.setVisible(false);
 			
@@ -416,7 +439,7 @@ public class MainClass {
 					
 					System.out.println(fileDir);
 					SampleSet instances = createInstancesX(fileDir);
-					if(prunning){
+					if(pruning){
 						SampleSet[] newSets = randomSplitForPrunning(instances);
 									////////////////////////////////run TDIDT
 								//// with newSets[0]
