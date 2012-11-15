@@ -1,3 +1,6 @@
+import java.util.List;
+import java.util.ListIterator;
+
 
 
 public abstract class Node{
@@ -19,5 +22,20 @@ public abstract class Node{
 		return subSet;
 	}
 	
+	public void createDT(SampleSet set, List<Attribute> attributes){
+	double currentEntropy=2.0,maxEntropy =2.0;
+	Attribute maxEntropyAttribute;
+	for(Attribute a : attributes){
+		currentEntropy=a.computeEntropy(set);
+		if(currentEntropy < maxEntropy){
+			maxEntropy=currentEntropy;
+			maxEntropyAttribute=a;
+		}
+		
+	}
+	}
+	
 	public abstract boolean isLeaf();
+    
+	
 }
