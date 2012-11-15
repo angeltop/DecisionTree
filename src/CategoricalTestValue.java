@@ -1,16 +1,16 @@
 public class CategoricalTestValue implements TestValue {
 
-	protected Number value;
+	protected String value;
 	
-	public CategoricalTestValue(Number value){
+	public CategoricalTestValue(String value){
 		this.value = value;
 	}
 	
-	public Number getValue() {
+	public String getValue() {
 		return value;
 	}
 
-	public void setValue(Number value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 

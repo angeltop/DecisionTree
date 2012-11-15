@@ -91,9 +91,9 @@ public class Pruner {
 			}
 			decisionNode.setChildren(newChildren);
 			if(getNodeSuccessProbability(decisionNode)>getSuccessProbability(decisionNode)){
-				Leaf replacementLeaf = new Leaf();
+				boolean replacementLeafResult = getMajorityClass(decisionNode.getSampleSet());
+				Leaf replacementLeaf = new Leaf(replacementLeafResult);
 				replacementLeaf.setSampleSet(decisionNode.getSampleSet());
-				replacementLeaf.setResult(getMajorityClass(decisionNode.getSampleSet()));
 				replacementLeaf.setTestValue(node.getTestValue());
 				return replacementLeaf;
 			}
