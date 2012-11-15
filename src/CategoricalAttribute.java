@@ -6,40 +6,44 @@ import java.lang.Math;;
 public class CategoricalAttribute extends Attribute {
 
 
-	private ArrayList<Integer> valueSet;
+	private ArrayList<String> valueSet;
 	
 	public CategoricalAttribute(int id){
 		super(id);
-		valueSet = new ArrayList<Integer>();
+		valueSet = new ArrayList<String>();
 	}
 	public boolean isContinuous(){
 		return false;
 	}
 	
-	public List<Integer> getValueSet(){
-		return new ArrayList(valueSet);
+	public List<String> getValueSet(){
+		return new ArrayList<String>(valueSet);
 	}
 	
 	
-	public void addValue(Number newValue){
+	int addValue(String newValue){
 		if(!valueSet.contains(newValue)){
-			valueSet.add(newValue.intValue());
+			valueSet.add(newValue);
+			return valueSet.size();
+		}
+		else{
+			return valueSet.indexOf(newValue);
 		}
 	}
 	public double computeEntropy(SampleSet set){
 		double entropy = 0.0;
 		int[] pos=new int[valueSet.size()],neg = new int[valueSet.size()];
+		int index = 0;
 		for(Sample s: set.samples){
-			for(Integer v :valueSet){
-				if(v == s.getValue(this.getId())){
-					if(s.getResult() == true) pos[v] +=1;
-					else neg[v] +=1;
-				}
-			}
+					index = s.getValue(getId()).intValue();
+					if(s.getResult() == true) pos[index] +=1;
+					else neg[index] +=1;
 		}
+		
 		//compute Entropy.
-		for(Integer v: valueSet){
-			entropy += ((pos[v]+neg[v])/set.getSamples().size())*super.computeEntropy(neg[v], pos[v]);
+		for(String v: valueSet){
+			index= valueSet.indexOf(v);
+			entropy += ((pos[index]+neg[index])/set.getSamples().size())*super.computeEntropy(neg[index], pos[index]);
 		}
 		return entropy;
 	}

@@ -134,14 +134,13 @@ public class MainClass {
 		BufferedReader reader = new BufferedReader(in);	
 		SampleSet X = new SampleSet();
 		String firstline = reader.readLine();	// the first line gives us the type of the attribute
+		Attribute a = null;
 		
 		if (firstline!=null){					
 			System.out.println(firstline);	
 			Pattern pat = Pattern.compile("\\d+\\:(n|c)\\s*");	// d+ for the id of the attribute, n or c for the type of attribute
 			Matcher type = pat.matcher(firstline);
 			while(type.find()){
-				Attribute a = new Attribute() {
-				};
 				String attrType = type.group();
 				
 				if(attrType.contains("n"))	//if n it is a numerical attribute

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class InternalNode extends Node{
 	
-	private Test test;
+	private TestValue test;
 
 	private	List<Node> children;
 	
@@ -22,11 +22,11 @@ public class InternalNode extends Node{
 		}
 	}
 	
-	public Test getTest() {
+	public TestValue getTest() {
 		return test;
 	}
 
-	public void setTest(Test test) {
+	public void setTest(TestValue test) {
 		this.test = test;
 	}
 

@@ -3,6 +3,10 @@ public class Leaf extends Node {
 
 	public boolean result;
 	
+	public Leaf(boolean b){
+		result = b;
+	}
+	
 	public boolean isResult() {
 		return result;
 	}

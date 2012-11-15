@@ -23,9 +23,7 @@ public abstract class Attribute {
 		this.id = id;
 	}
 	
-	public double computeEntropy(SampleSet set){
-		return 5000; //Very bad Entropy.
-	}
+	public abstract double computeEntropy(SampleSet set);
 	
 	protected double computeEntropy(int neg, int pos){
 		double entropy =0.0;
