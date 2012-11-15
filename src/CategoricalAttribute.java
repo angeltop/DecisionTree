@@ -51,16 +51,20 @@ public class CategoricalAttribute extends Attribute {
 	}
 	
 	public Node splitData(SampleSet set){
+		Node m = null;
 		SampleSet[] newSets = new SampleSet[this.valueSet.size()];
+		int i;
 		for(Sample s : set.getSamples()){
 			newSets[valueSet.indexOf(s.getValue(this.id))].addSample(s);
 		}
 		InternalNode n = new InternalNode();
-		for (SampleSet newSet : newSets){
+		for (i=0;i <newSets.length; ++i){
 			for (Attribute a : set.getAttributes()){
-				if(a.id !=this.id) newSet.addAttribute(a);
+				if(a.id !=this.id) newSets[i].addAttribute(a);
 			}
-			n.addChild(Node.createDT(newSet));
+			m=Node.createDT(newSets[i]);
+			m.setTestValue(new CategoricalTestValue(this.getValueSet().get(i)));
+			n.addChild(m);
 		}
 		return n;
 	}

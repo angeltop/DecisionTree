@@ -113,10 +113,10 @@ public class MainClass {
 			catch (IOException e) {
 				JOptionPane.showMessageDialog(mainWindow, e.getMessage());
 			}
-			System.exit(0);
+			System.exit(10);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		main.mainWindow.pack();
@@ -304,12 +304,12 @@ public class MainClass {
 		leaf3.setTestValue(tl3);
 		
 		leaf4 = new Leaf(true);
-		ContinuousTestValue tl4= new ContinuousTestValue(true);
+		ContinuousTestValue tl4= new ContinuousTestValue(2.0,true);
 		
 		leaf4.setTestValue(tl4);
 		
 		leaf5 = new Leaf(true);
-		ContinuousTestValue tl5 = new ContinuousTestValue(false);
+		ContinuousTestValue tl5 = new ContinuousTestValue(2.0,false);
 
 		leaf5.setTestValue(tl5);
 		

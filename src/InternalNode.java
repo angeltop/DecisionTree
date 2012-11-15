@@ -50,15 +50,15 @@ public class InternalNode extends Node{
 		return false;
 	}
 	public int printNode(int id, int nextAvailableId){
-		String outputText ="";
+		String outputText;
 		/* we have to print the id, the the parent test, the attribute test and the
 		 * children ids
 		 */
 						 
 		if(this.getTestValue()==null)
-			outputText = outputText + Integer.toString(id) + "\t"+ "root"+ "\t"+ this.getTest().printTest()+"\t";
+			outputText = Integer.toString(id) + "\t"+ "root"+ "\t"+ this.getTest().printTest()+"\t";
 		else
-			outputText = outputText + Integer.toString(id) + "\t"+ this.getTestValue().printTestValue()+ "\t"+ this.getTest().printTest()+"\t";
+			outputText = Integer.toString(id) + "\t"+ this.getTestValue().printTestValue()+ "\t"+ this.getTest().printTest()+"\t";
 		int children = (this).getChildren().size();
 		int givenId =nextAvailableId; 
 		int[] givenIds = new int[children];

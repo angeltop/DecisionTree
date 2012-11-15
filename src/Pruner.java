@@ -105,7 +105,7 @@ public class Pruner {
 				 * those sets are recursively divide among the two subtrees with the children on top.
 				 */
 				for(Node child: decisionNode.getChildren()){
-					if (((ContinuousTestValue) child.getTestValue()).value = true){
+					if (((ContinuousTestValue) child.getTestValue()).lessThan = true){
 						divideSamples(child, trueSet);
 					}else{
 						divideSamples(child, falseSet);

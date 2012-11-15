@@ -83,6 +83,7 @@ public Node splitData(SampleSet set){
 	SampleSet sLT = new SampleSet();
 	SampleSet sGEQ = new SampleSet();
 	InternalNode n = new InternalNode();
+	Node m;
 	//Adding attributes to new Sets.
 	for(Attribute a: set.getAttributes()){
 		if(a.getId() != this.id){
@@ -96,8 +97,12 @@ public Node splitData(SampleSet set){
 		}
 		else sGEQ.addSample(s);
 	}
-	n.addChild(Node.createDT(sLT));
-	n.addChild(Node.createDT(sGEQ));
+	m=Node.createDT(sLT);
+	m.setTestValue(new ContinuousTestValue(this.splitValue, true));
+	n.addChild(m);
+	m =Node.createDT(sGEQ);
+	m.setTestValue(new ContinuousTestValue(this.splitValue, false));
+	n.addChild(m);
 	return n;
 }
 

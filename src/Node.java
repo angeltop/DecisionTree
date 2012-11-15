@@ -26,7 +26,7 @@ public abstract class Node{
 	public SampleSet getSampleSet(){
 		return subSet;
 	}
-	
+
 	public static Node createDT(SampleSet set){
 		double currentEntropy=2.0,minEntropy =2.0;
 		Attribute minEntropyAttribute = null;
