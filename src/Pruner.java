@@ -1,4 +1,5 @@
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Pruner {
@@ -9,16 +10,14 @@ public class Pruner {
 	public Pruner(SampleSet pruningSet, Node decisionTree){
 		this.pruningSet = pruningSet;
 		this.decisionTreeRoot = decisionTree;
-		//divideSamples(decisionTreeRoot, pruningSet);
 	}
 	
 	public Node prune(){
-		//pruneSubtree(decisionTreeRoot);
-		
-		return decisionTreeRoot;
-		
+		divideSamples(decisionTreeRoot, pruningSet);
+		return pruneSubtree(decisionTreeRoot);
 	}
 
+	//TODO
 	private void divideSamples(Node node, SampleSet nodeSet){
 		node.setSampleSet(nodeSet);
 		if(!node.isLeaf()){
@@ -36,19 +35,29 @@ public class Pruner {
 		}
 	}
 	
-//	private Node pruneSubtree(Node node) {
-//		double nodeEntropy = getNodeEntropy(node);
-//		if(!node.isLeaf()){
-//			double subTreeEntropy = 0;
-//			int nodeSize = node.getSampleSet().getSamples().size();
-//			for(Iterator<Node>i= ((InternalNode) node).getChildren().iterator(); i.hasNext()){
-//				double childWeight = child.getSampleSet().getSamples().size()/nodeSize;
-//				subTreeEntropy = childWeight*pruneSubtree(child);
-//			}
-//			
-//		}
-//		return nodeEntropy;
-//	}
+	private Node pruneSubtree(Node node) {
+		if(!node.isLeaf()){
+			return node;
+		}else{
+			InternalNode decisionNode = (InternalNode) node;
+			List<Node> newChildren = new ArrayList<Node>();
+			for(Node child: decisionNode.getChildren()){
+				newChildren.add(pruneSubtree(child));
+			}
+			for(Node child: newChildren){
+				decisionNode.addChild(child);
+			}
+			if(getNodeSuccessProbability(decisionNode)>getSuccessProbability(decisionNode)){
+				Leaf replacementLeaf = new Leaf();
+				replacementLeaf.setSampleSet(decisionNode.getSampleSet());
+				ClassTestValue leafResult = new ClassTestValue();
+				leafResult.setResult(getMajorityClass(decisionNode.getSampleSet()));
+				replacementLeaf.setTestValue(leafResult);
+				return replacementLeaf;
+			}
+			else return decisionNode;
+		}
+	}
 
 	public double getSuccessProbability(Node subtree) {
 		if(subtree.isLeaf()){
@@ -77,7 +86,7 @@ public class Pruner {
 		double trueProbability = trueCount/(trueCount+falseCount);
 		double falseProbability = falseCount/(trueCount+falseCount);
 		if(node.isLeaf()){
-			if(((Leaf) node).getResult()){
+			if(((ClassTestValue) node.getTestValue()).getResult()){
 				return trueProbability;
 			}else{
 				return falseProbability;
@@ -88,5 +97,18 @@ public class Pruner {
 		}else{
 			return falseProbability;
 		}
+	}
+	
+	public boolean getMajorityClass(SampleSet samples){
+		double trueCount=0;
+		double falseCount=0;
+		for(Sample s: samples.getSamples()){
+			if (s.getResult()){
+				trueCount++;
+			}else{
+				falseCount++;
+			}
+		}
+		return trueCount>falseCount;
 	}
 }
