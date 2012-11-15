@@ -1,9 +1,18 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/* 
+ * The Pruner class is used to prune a given decision Tree using a new SampleSet
+ * The SampleSet should be different from the Sample Set used to create the tree
+ * to ensure effectiveness of the pruner
+ */
 
 public class Pruner {
-
+	
+	/*
+	 * The pruner requires the pruningSet and the root node of the tree to prune to get start
+	 * Therefore these are the members and constructor parameters of the Pruner
+	 */
 	SampleSet pruningSet;
 	Node decisionTreeRoot;
 	
@@ -12,21 +21,46 @@ public class Pruner {
 		this.decisionTreeRoot = decisionTree;
 	}
 	
+	/*
+	 * The actual pruning requires some preparation
+	 * First the pruningSet is distributed over the tree according to the node tests,
+	 * and the according test values of the children.
+	 * After that the tree is pruned.
+	 */
 	public Node prune(){
 		divideSamples(decisionTreeRoot, pruningSet);
 		return pruneSubtree(decisionTreeRoot);
 	}
-
+	
+	/*
+	 * The division of the samples is done recursively.
+	 * divideSamples(node, nodeSet) works for any subtree.
+	 */
 	private void divideSamples(Node node, SampleSet nodeSet){
+		/*
+		 * The first step is to assign the given set to the top node of the subtree.
+		 * If it is a leaf, we're down, else we have to divide the samples into the
+		 * correct sampleSets for the subtrees.
+		 */
 		node.setSampleSet(nodeSet);
 		if(!node.isLeaf()){
+			
 			InternalNode decisionNode = (InternalNode) node;
 			Test nodeTest = decisionNode.getTest();
+			
+			/*
+			 * For tests on continuous attributes, the division is always binary.
+			 * Therefore we can divide the set into the set for which the test is true
+			 * and the set for which it's false. This is obviously dependent on the 
+			 * test of the node.
+			 */
 			if(nodeTest instanceof ContinuousTest){
+				
 				SampleSet trueSet = new SampleSet();
 				trueSet.setAtrributes(nodeSet.getAttributes());
 				SampleSet falseSet = new SampleSet();
 				falseSet.setAtrributes(nodeSet.getAttributes());
+				
 				switch(((ContinuousTest) nodeTest).getSplitType()){
 				case LESS:
 					for(Sample s: nodeSet.getSamples()){
@@ -65,22 +99,53 @@ public class Pruner {
 					}
 					break;
 				}
-			}else{
+				
+				/*
+				 * After the determination of the true and false set dependent on the test
+				 * those sets are recursively divide among the two subtrees with the children on top.
+				 */
+				for(Node child: decisionNode.getChildren()){
+					if (((ContinuousTestValue) child.getTestValue()).value = true){
+						divideSamples(child, trueSet);
+					}else{
+						divideSamples(child, falseSet);
+					}
+				}
+			}
+			/*
+			 * For categorical Attributes the distribution is done per child.
+			 * For each child, all samples with the correct attribute value according
+			 * to the testValue of the child are assembled in a new SampleSet.
+			 * Then the sampleset is divided in the subtree with that child on top.
+			 */
+			else{
 				CategoricalAttribute decisionAttribute = (CategoricalAttribute) decisionNode.getTest().getTestAttribute();
+				
 				for(Node child: decisionNode.getChildren()){
 					SampleSet childSet = new SampleSet();
 					childSet.setAtrributes(nodeSet.getAttributes());
+				
 					for(Sample s: nodeSet.getSamples()){
 						if(s.getValue(decisionAttribute.getId()).equals(decisionAttribute.addValue(((CategoricalTestValue) decisionNode.getTestValue()).getValue()))){
 							childSet.addSample(s);
 						}
 					}
-					child.setSampleSet(childSet);
-				}	
+					
+					divideSamples(child, childSet);
+				}
 			}
 		}
 	}
 	
+	/*
+	 * The pruning of any subtree is done recursively.
+	 * First, all subtrees of the current top node are pruned.
+	 * The resulting subtrees are treated as the new children of the top node.
+	 * Then the success probability of the subtree is compared to the success probability, 
+	 * if the current top node were treated as a leaf.
+	 * If treating it as a leaf would increase the success probability an according new Leaf
+	 * is created and returned as the pruned subtree.
+	 */
 	private Node pruneSubtree(Node node) {
 		if(!node.isLeaf()){
 			return node;
@@ -91,7 +156,7 @@ public class Pruner {
 				newChildren.add(pruneSubtree(child));
 			}
 			decisionNode.setChildren(newChildren);
-			if(getNodeSuccessProbability(decisionNode)>getSuccessProbability(decisionNode)){
+			if(getNodeSuccessProbability(decisionNode) > getSuccessProbability(decisionNode)){
 				boolean replacementLeafResult = getMajorityClass(decisionNode.getSampleSet());
 				Leaf replacementLeaf = new Leaf(replacementLeafResult);
 				replacementLeaf.setSampleSet(decisionNode.getSampleSet());
@@ -102,6 +167,12 @@ public class Pruner {
 		}
 	}
 
+	/*
+	 * This function returns the success probability of a subtree starting at a given node.
+	 * If the node is a leaf, the success probability is only dependent on that single node.
+	 * If it is an internal node, the success probability for every subtree is determined
+	 * and weighted depending on the size of the child's sampleSet in comparison to the sampleSet of the parent
+	 */
 	public double getSuccessProbability(Node subtree) {
 		if(subtree.isLeaf()){
 			return getNodeSuccessProbability(subtree);
