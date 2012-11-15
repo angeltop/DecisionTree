@@ -24,7 +24,7 @@ public abstract class Node{
 	
 	public void createDT(SampleSet set, List<Attribute> attributes){
 	double currentEntropy=2.0,maxEntropy =2.0;
-	Attribute maxEntropyAttribute=null;
+	Attribute maxEntropyAttribute;
 	for(Attribute a : attributes){
 		currentEntropy=a.computeEntropy(set);
 		if(currentEntropy < maxEntropy){
