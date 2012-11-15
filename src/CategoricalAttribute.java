@@ -20,6 +20,7 @@ public class CategoricalAttribute extends Attribute {
 		return new ArrayList(valueSet);
 	}
 	
+	
 	public void addValue(Number newValue){
 		if(!valueSet.contains(newValue)){
 			valueSet.add(newValue.intValue());
@@ -41,6 +42,21 @@ public class CategoricalAttribute extends Attribute {
 			entropy += ((pos[v]+neg[v])/set.getSamples().size())*super.computeEntropy(neg[v], pos[v]);
 		}
 		return entropy;
+	}
+	
+	public Node splitData(SampleSet set){
+		SampleSet[] newSets = new SampleSet[this.valueSet.size()];
+		for(Sample s : set.getSamples()){
+			newSets[valueSet.indexOf(s.getValue(this.id))].addSample(s);
+		}
+		InternalNode n = new InternalNode();
+		for (SampleSet newSet : newSets){
+			for (Attribute a : set.getAttributes()){
+				if(a.id !=this.id) newSet.addAttribute(a);
+			}
+			n.addChild(Node.createDT(newSet));
+		}
+		return n;
 	}
 	
 }

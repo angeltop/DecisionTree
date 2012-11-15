@@ -34,4 +34,7 @@ public abstract class Attribute {
 		entropy = pos/total*(java.lang.Math.log(total/pos)/java.lang.Math.log(2));
 		return entropy;
 	}
+	public Node splitData(SampleSet set){
+		return null;
+	}
 }

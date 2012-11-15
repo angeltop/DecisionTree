@@ -79,5 +79,27 @@ public int compare(
 	return 1;
 }
 
+public Node splitData(SampleSet set){
+	SampleSet sLT = new SampleSet();
+	SampleSet sGEQ = new SampleSet();
+	InternalNode n = new InternalNode();
+	//Adding attributes to new Sets.
+	for(Attribute a: set.getAttributes()){
+		if(a.getId() != this.id){
+			sLT.addAttribute(a);
+			sGEQ.addAttribute(a);
+		}
+	}
+	for(Sample s:set.getSamples()){
+		if(s.getValue(this.getId()).doubleValue()<this.splitValue){
+			sLT.addSample(s);
+		}
+		else sGEQ.addSample(s);
+	}
+	n.addChild(Node.createDT(sLT));
+	n.addChild(Node.createDT(sGEQ));
+	return n;
+}
+
 
 }
