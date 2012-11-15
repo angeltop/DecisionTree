@@ -79,7 +79,7 @@ public abstract class Node{
 			i++;
 		}
 		FileWriter out = new FileWriter(output);
-		this.printNode(nodeId, nodeId+1);
+		this.printNode(out,nodeId, nodeId+1);
 		out.write(outputText);
 		out.close();
 		return output;
@@ -91,6 +91,6 @@ public abstract class Node{
 	 * current node and and as nextAvailable id we give the number that is available for the
 	 * next node without id.
 	 */
-	public abstract int printNode(int id, int nextAvailableId);
+	public abstract int printNode(FileWriter f,int id, int nextAvailableId) throws IOException;
 	
 }

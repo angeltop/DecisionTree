@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 public class Leaf extends Node {
 
@@ -30,13 +34,14 @@ public class Leaf extends Node {
 	 * next node without id.
 	 */
 	@Override
-	public int printNode(
-			int id, int nextAvailableId) {
+	public int printNode(FileWriter f,
+			int id, int nextAvailableId) throws IOException {
 		String outputText ="";
 		if(this.result)			
 			outputText = Integer.toString(id) +"\t"+ this.getTestValue().printTestValue()  +"\t+\n";
 		else
 			outputText = Integer.toString(id) +"\t"+ this.getTestValue().printTestValue()  +"\t-\n";
+		f.write(outputText);
 		return nextAvailableId; // the next available id is the same as before since no new node is found
 	}
 }

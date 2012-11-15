@@ -1,4 +1,6 @@
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +52,7 @@ public class InternalNode extends Node{
 	public boolean isLeaf() {
 		return false;
 	}
-	public int printNode(int id, int nextAvailableId){
+	public int printNode(FileWriter f, int id, int nextAvailableId) throws IOException{
 		String outputText;
 		/* we have to print the id, the the parent test, the attribute test and the
 		 * children ids
@@ -71,10 +73,11 @@ public class InternalNode extends Node{
 			givenId ++;
 		}
 		outputText = outputText+"\n";
+		f.write(outputText);
 		nextAvailableId = givenId;
 			
 		for(int i =0; i<children; i++){ // iterate in children and print its info
-			nextAvailableId = this.getChildren().get(i).printNode(givenIds[i], nextAvailableId);
+			nextAvailableId = this.getChildren().get(i).printNode(f,givenIds[i], nextAvailableId);
 		}
 		return nextAvailableId;
 	}
