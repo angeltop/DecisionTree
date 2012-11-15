@@ -98,11 +98,12 @@ public Node splitData(SampleSet set){
 		else sGEQ.addSample(s);
 	}
 	m=Node.createDT(sLT);
-	m.setTestValue(new ContinuousTestValue(this.splitValue, true));
+	m.setTestValue(new ContinuousTestValue( true));
 	n.addChild(m);
 	m =Node.createDT(sGEQ);
-	m.setTestValue(new ContinuousTestValue(this.splitValue, false));
+	m.setTestValue(new ContinuousTestValue( false));
 	n.addChild(m);
+	n.setTest(new ContinuousTest(this, this.splitValue));
 	return n;
 }
 

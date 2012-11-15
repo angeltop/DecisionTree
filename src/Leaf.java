@@ -8,6 +8,7 @@ public class Leaf extends Node {
 	
 	public Leaf(boolean b){
 		result = b;
+		super.setTestValue(null);
 	}
 	
 	public boolean isResult() {
@@ -31,7 +32,7 @@ public class Leaf extends Node {
 	@Override
 	public int printNode(
 			int id, int nextAvailableId) {
-		String outputText;
+		String outputText ="";
 		if(this.result)			
 			outputText = Integer.toString(id) +"\t"+ this.getTestValue().printTestValue()  +"\t+\n";
 		else

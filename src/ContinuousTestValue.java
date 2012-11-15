@@ -3,20 +3,18 @@ public class ContinuousTestValue implements TestValue {
 	/* If the parent attribute is Continuous/Numerical
 	 * we need a true or false regarding the split.
 	 */
-	boolean lessThan;
-	double value;
+	boolean value;
 	
-	public ContinuousTestValue(double value,boolean lessThan){
-		this.lessThan = lessThan;
+	public ContinuousTestValue(boolean value){
 		this.value = value;
 	}
 	
 	@Override
 	public String printTestValue() {
-		if(lessThan){
-			return "i < "+ Double.toString(value);
+		if(value){
+			return "yes";
 		}else{
-			return "i >= "+ Double.toString(value);
+			return "no";
 		}
 	}
 }

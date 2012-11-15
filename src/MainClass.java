@@ -304,12 +304,12 @@ public class MainClass {
 		leaf3.setTestValue(tl3);
 		
 		leaf4 = new Leaf(true);
-		ContinuousTestValue tl4= new ContinuousTestValue(2.0,true);
+		ContinuousTestValue tl4= new ContinuousTestValue(true);
 		
 		leaf4.setTestValue(tl4);
 		
 		leaf5 = new Leaf(true);
-		ContinuousTestValue tl5 = new ContinuousTestValue(2.0,false);
+		ContinuousTestValue tl5 = new ContinuousTestValue(false);
 
 		leaf5.setTestValue(tl5);
 		
@@ -326,7 +326,7 @@ public class MainClass {
 		
 		child2 = new InternalNode();
 		CategoricalTestValue tc2 = new CategoricalTestValue("5");
-		ContinuousTest tc22 = new ContinuousTest(new ContinuousAttribute(1), ContinuousTest.SplitType.LESS, 5.05);
+		ContinuousTest tc22 = new ContinuousTest(new ContinuousAttribute(1),  5.05);
 		child2.setTest(tc22);
 		child2.setTestValue(tc2);
 		((InternalNode)child2).addChild(leaf4);

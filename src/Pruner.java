@@ -61,51 +61,21 @@ public class Pruner {
 				SampleSet falseSet = new SampleSet();
 				falseSet.setAtrributes(nodeSet.getAttributes());
 				
-				switch(((ContinuousTest) nodeTest).getSplitType()){
-				case LESS:
-					for(Sample s: nodeSet.getSamples()){
-						if(s.getValue(nodeTest.getTestAttribute().getId()).doubleValue() < ((ContinuousTest) nodeTest).getSplitValue()){
-							trueSet.addSample(s);
-						}else{
-							falseSet.addSample(s);
-						}
+				
+				for(Sample s: nodeSet.getSamples()){
+					if(s.getValue(nodeTest.getTestAttribute().getId()).doubleValue() < ((ContinuousTest) nodeTest).getSplitValue()){
+						trueSet.addSample(s);
+					}else
+						falseSet.addSample(s);
 					}
-					break;
-				case LESSOREQUAL:
-					for(Sample s: nodeSet.getSamples()){
-						if(s.getValue(nodeTest.getTestAttribute().getId()).doubleValue() <= ((ContinuousTest) nodeTest).getSplitValue()){
-							trueSet.addSample(s);
-						}else{
-							falseSet.addSample(s);
-						}
-					}
-					break;
-				case MOREOREQUAL:
-					for(Sample s: nodeSet.getSamples()){
-						if(s.getValue(nodeTest.getTestAttribute().getId()).doubleValue() >= ((ContinuousTest) nodeTest).getSplitValue()){
-							trueSet.addSample(s);
-						}else{
-							falseSet.addSample(s);
-						}
-					}
-					break;
-				case MORE:
-					for(Sample s: nodeSet.getSamples()){
-						if(s.getValue(nodeTest.getTestAttribute().getId()).doubleValue() > ((ContinuousTest) nodeTest).getSplitValue()){
-							trueSet.addSample(s);
-						}else{
-							falseSet.addSample(s);
-						}
-					}
-					break;
-				}
+				
 				
 				/*
 				 * After the determination of the true and false set dependent on the test
 				 * those sets are recursively divide among the two subtrees with the children on top.
 				 */
 				for(Node child: decisionNode.getChildren()){
-					if (((ContinuousTestValue) child.getTestValue()).lessThan = true){
+					if (((ContinuousTestValue) child.getTestValue()).value = true){
 						divideSamples(child, trueSet);
 					}else{
 						divideSamples(child, falseSet);

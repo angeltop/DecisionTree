@@ -16,6 +16,7 @@ public class InternalNode extends Node{
 	
 	public InternalNode(){
 		children = new ArrayList<Node>();
+		super.setTestValue(null);
 	}
 	
 	public List<Node> getChildren(){
