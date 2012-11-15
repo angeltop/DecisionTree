@@ -153,11 +153,11 @@ public class MainClass {
 		String line = reader.readLine();
 		
 		int attributeId = 0;
-		Pattern pattern = Pattern.compile("\\d+\\:((\\d+\\.\\d+)|\\d+)\\s*");
+		Pattern pattern = Pattern.compile("\\d+\\:((\\d+\\.\\d+)|\\d+|(\\w+))\\s*");
 		
 		while(line!=null){
 			Sample instance = new Sample(X.attributes.size());
-			
+			int indexOfValue=0;
 			Matcher att = pattern.matcher(line);
 			while(att.find()){
 				String value = att.group();
@@ -168,22 +168,24 @@ public class MainClass {
 			
 				if(X.attributes.get(attributeId-1).getClass().equals(CategoricalAttribute.class)){
 					
-					instance.addValue(attributeId,  Integer.valueOf(value));
-					
 					Attribute attribute = (Attribute) X.attributes.get(attributeId-1);
 					if(attributeId==attribute.getId()){
-						((CategoricalAttribute)attribute).addValue(Integer.valueOf(value));
+						indexOfValue=((CategoricalAttribute)attribute).addValue(value);	
+						System.out.println("Index of "+ value +" is "+ indexOfValue);
+
 						X.attributes.set(attributeId-1,attribute);
+						
 					}else{
 						for(int i=0; i<X.attributes.size(); i++){
 							if(X.attributes.get(i).getId()==attributeId){
 								attribute = (CategoricalAttribute) X.attributes.get(i);
-								((CategoricalAttribute)attribute).addValue(Integer.valueOf(value));
+								indexOfValue = ((CategoricalAttribute)attribute).addValue(value);
 								X.attributes.set(i,attribute);
+								break;
 							}
 								
-						}
-					}
+						}					}
+					instance.addValue(attributeId, Integer.valueOf(indexOfValue)); // 
 					
 				}
 				else
@@ -325,29 +327,29 @@ public class MainClass {
 		InternalNode root, child1, child2;
 		Leaf leaf1, leaf2, leaf3, leaf4, leaf5;
 		
-		leaf1 = new Leaf();
+		leaf1 = new Leaf(true);
 		CategoricalTestValue tl1 = new CategoricalTestValue("1");
-		leaf1.setResult(true);
+	
 		leaf1.setTestValue(tl1);
 		
-		leaf2 = new Leaf();
+		leaf2 = new Leaf(false);
 		CategoricalTestValue tl2 = new CategoricalTestValue("2");
-		leaf2.setResult(false);	
+	
 		leaf2.setTestValue(tl2);
 		
-		leaf3 = new Leaf();
+		leaf3 = new Leaf(true);
 		CategoricalTestValue tl3 = new CategoricalTestValue("3");
-		leaf3.setResult(true);
+	
 		leaf3.setTestValue(tl3);
 		
-		leaf4 = new Leaf();
+		leaf4 = new Leaf(true);
 		ContinuousTestValue tl4= new ContinuousTestValue(true);
-		leaf4.setResult(true);
+		
 		leaf4.setTestValue(tl4);
 		
-		leaf5 = new Leaf();
+		leaf5 = new Leaf(true);
 		ContinuousTestValue tl5 = new ContinuousTestValue(false);
-		leaf5.setResult(true);
+
 		leaf5.setTestValue(tl5);
 		
 		child1 = new InternalNode();

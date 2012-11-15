@@ -24,7 +24,7 @@ public class CategoricalAttribute extends Attribute {
 	int addValue(String newValue){
 		if(!valueSet.contains(newValue)){
 			valueSet.add(newValue);
-			return valueSet.size();
+			return (valueSet.size()-1);
 		}
 		else{
 			return valueSet.indexOf(newValue);
