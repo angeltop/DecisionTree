@@ -280,16 +280,7 @@ public class MainClass {
 		
 	}/////////////////////////////////////////////////////////////////////////////////
 	
-	/* This function creates the line that describes the attributes of the given node
-	 * we call this function recursively in order to access all nodes. As id we give the id of the 
-	 * current node and and as nextAvailable id we give the number that is available for the
-	 * next node without id.
-	 */
 	 
-	
-
-
-	
 	
 	// DELETE BEFORE SUBMITION
 	private InternalNode createOutputTestTree(){
