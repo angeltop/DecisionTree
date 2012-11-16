@@ -1,25 +1,19 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.management.monitor.Monitor;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -61,7 +55,6 @@ public class MainClass {
 		JRadioButton yes = new JRadioButton("Yes",true);
 		yes.setActionCommand("yes");
 		yes.addActionListener(listener);
-		main.pruning = true;
 		JRadioButton no = new JRadioButton("No", false);
 		no.setActionCommand("no");
 		ButtonGroup gr = new ButtonGroup();
@@ -91,34 +84,8 @@ public class MainClass {
 		
 		main.mainWindow.add(buttons, BorderLayout.PAGE_END);
 
-		main.mainWindow.setVisible(false);//////////// SET TRUE
-		///////////////////////////////////////////////////////DELETE BEFORE SUBMITION
-		try {
-			main.fileDir = "trainingSet"+File.separator+"training.txt";
-			SampleSet instances = main.createInstancesX(main.fileDir);
-			
-			SampleSet[] newSets = new SampleSet[2];
-			newSets = main.randomSplitForPrunning(instances);
-			System.out.println("\n\n**********Sample Set***********\n\n\n");
-			main.printSampleSet(instances);
-			System.out.println("\n\n**********Training Set***********\n\n\n");
-			main.printSampleSet(newSets[0]);
-			System.out.println("\n\n**********Testing Set***********\n\n\n");
-			main.printSampleSet(newSets[1]);
-			
-			try{
-				File output = main.createOutputTestTree().createOutputFile(fileDir);
-				JOptionPane.showMessageDialog(mainWindow, "The output file is generated\n"+ output.getAbsolutePath());
-			}
-			catch (IOException e) {
-				JOptionPane.showMessageDialog(mainWindow, e.getMessage());
-			}
-			System.exit(10);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		//////////////////////////////////////////////////////////////////////////
+		main.mainWindow.setVisible(true);
+		
 		main.mainWindow.pack();
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = main.mainWindow.getSize().width;
@@ -133,7 +100,6 @@ public class MainClass {
 	 */
 	public SampleSet createInstancesX(String textFile) throws IOException{
 		
-		System.out.println("Create Instances");
 		File instances = new File(textFile);
 		
 		FileReader in = new FileReader(instances);
@@ -143,7 +109,6 @@ public class MainClass {
 		Attribute a = null;
 		
 		if (firstline!=null){					
-			System.out.println(firstline);	
 			Pattern pat = Pattern.compile("\\d+\\:(n|c)\\s*");	// d+ for the id of the attribute, n or c for the type of attribute
 			Matcher type = pat.matcher(firstline);
 			while(type.find()){
@@ -187,8 +152,6 @@ public class MainClass {
 					if(attributeId==attribute.getId()){
 						// add value returns the index of the value's insertion in the matrix
 						indexOfValue=((CategoricalAttribute)attribute).addValue(value);	
-						System.out.println("Index of "+ value +" is "+ indexOfValue);
-
 						X.attributes.set(attributeId-1,attribute); // we place back the updated attribute
 						
 					}else{
@@ -254,94 +217,9 @@ public class MainClass {
 		
 		return newSets;
 	}
-	// DELETE BEFORE SUBMITION
-	private void printSampleSet(SampleSet instances){
-		System.out.println("Attributes");
-		for(Iterator it = instances.attributes.iterator(); it.hasNext(); ){
-			Attribute curr = (Attribute) it.next();
-			System.out.print(curr.getId()+"\t");
-			if(!curr.isContinuous()){
-				CategoricalAttribute c = (CategoricalAttribute) curr;
-				for (int q=0; q<c.getValueSet().size(); q++){
-					System.out.print("Value "+c.getValueSet().get(q)+ "\t");
-				}
-			}
-									
-			System.out.println();
-		}
-		
-		for(Iterator it = instances.samples.iterator(); it.hasNext(); ){
-			Sample curr = (Sample) it.next();
-			for(int p=1; p<=curr.numberOfAttributes(); p++)
-				System.out.print(curr.getValue(p)+"\t");
-			System.out.print(curr.getResult());
-			System.out.println();
-		}
-		
-	}/////////////////////////////////////////////////////////////////////////////////
 	
 	 
 	
-	// DELETE BEFORE SUBMITION
-	private InternalNode createOutputTestTree(){
-		
-		InternalNode root, child1, child2;
-		Leaf leaf1, leaf2, leaf3, leaf4, leaf5;
-		
-		leaf1 = new Leaf(true);
-		CategoricalTestValue tl1 = new CategoricalTestValue("1");
-	
-		leaf1.setTestValue(tl1);
-		
-		leaf2 = new Leaf(false);
-		CategoricalTestValue tl2 = new CategoricalTestValue("2");
-	
-		leaf2.setTestValue(tl2);
-		
-		leaf3 = new Leaf(true);
-		CategoricalTestValue tl3 = new CategoricalTestValue("3");
-	
-		leaf3.setTestValue(tl3);
-		
-		leaf4 = new Leaf(true);
-		ContinuousTestValue tl4= new ContinuousTestValue(true);
-		
-		leaf4.setTestValue(tl4);
-		
-		leaf5 = new Leaf(true);
-		ContinuousTestValue tl5 = new ContinuousTestValue(false);
-
-		leaf5.setTestValue(tl5);
-		
-		child1 = new InternalNode();
-		CategoricalTestValue tc1 = new CategoricalTestValue("3");
-		child1.setTestValue(tc1);
-		
-		CategoricalTest tc11 = new CategoricalTest(new CategoricalAttribute(3));
-		child1.setTest(tc11);
-		((InternalNode)child1).addChild(leaf1);
-		((InternalNode)child1).addChild(leaf2);
-		((InternalNode)child1).addChild(leaf3);
-		
-		
-		child2 = new InternalNode();
-		CategoricalTestValue tc2 = new CategoricalTestValue("5");
-		ContinuousTest tc22 = new ContinuousTest(new ContinuousAttribute(1),  5.05);
-		child2.setTest(tc22);
-		child2.setTestValue(tc2);
-		((InternalNode)child2).addChild(leaf4);
-		((InternalNode)child2).addChild(leaf5);
-
-		root = new InternalNode();
-		
-		CategoricalTest troot =  new CategoricalTest(new CategoricalAttribute(2));
-		
-		root.setTest(troot);
-		((InternalNode)root).addChild(child1);
-		((InternalNode)root).addChild(child2);
-		
-		return root;		
-	}//////////////////////////////////////////////////////////
 	
 	/* This class implements the buttonlistener for our
 	 * window/frame
@@ -373,26 +251,20 @@ public class MainClass {
 				pruning = false;
 			}else if(arg0.getActionCommand().equals("ok")){
 				mainWindow.setVisible(false);
-			
+				Node result = null;
 				try {
 					SampleSet instances = createInstancesX(fileDir);
 					if(pruning){
 						SampleSet[] newSets = randomSplitForPrunning(instances);
-									////////////////////////////////run TDIDT
-								//// with newSets[0]
-						
-						// prune on newSets[1]
-						
-						
+						Node root = Node.createDT(newSets[0]);
+						Pruner pruner = new Pruner(newSets[1], root);
+						result = pruner.prune();
 					}else{
 						
-						///////////////////// run TDIDT with instances
-						
+						result = Node.createDT(instances);
 					}
-					
-					
-					//////////////Output
-					System.exit(0);
+					result.createOutputFile(fileDir);
+					System.exit(1);
 					
 				} catch (IOException e) {
 
