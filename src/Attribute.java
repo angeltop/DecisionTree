@@ -38,15 +38,15 @@ public abstract class Attribute {
 	 */
 	protected double computeEntropy(int neg, int pos){
 		double entropy =0.0;
-		int total = neg+pos;
-		if(neg!=0)
-			entropy = (neg/total)*(java.lang.Math.log(total/neg)/java.lang.Math.log(2));
-		if (pos!=0)
-			entropy =  entropy + pos/total*(java.lang.Math.log(total/pos)/java.lang.Math.log(2));
-		
+		double total = neg+pos;
+		if(pos==0) return 0.0;
+		if(neg==0) return 0.0;
+		entropy += (neg/total)*(java.lang.Math.log(total/neg)/java.lang.Math.log(2.0));
+		entropy += (pos/total)*(java.lang.Math.log(total/pos)/java.lang.Math.log(2.0));
 		return entropy;
 	}
 	public Node splitData(SampleSet set){
 		return null;
 	}
+	public abstract Test createTest();
 }

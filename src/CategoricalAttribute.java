@@ -51,7 +51,7 @@ public class CategoricalAttribute extends Attribute {
 		//compute Entropy.
 		for(String v: valueSet){
 			index= valueSet.indexOf(v);
-			entropy += ((pos[index]+neg[index])/set.getSamples().size())
+			entropy += new Double((pos[index]+neg[index])/set.getSamples().size())
 								*super.computeEntropy(neg[index], pos[index]);
 		}
 		return entropy;
@@ -61,9 +61,10 @@ public class CategoricalAttribute extends Attribute {
 		Node m = null;
 		SampleSet[] newSets = new SampleSet[this.valueSet.size()];
 		int i;
+		//initialize Sets.
+		for(i=0;i<newSets.length;i++) newSets[i] = new SampleSet();
 		// Add samples to the correct set, indexed by categorical attribute index.
 		for(Sample s : set.getSamples()){
-			newSets[s.getValue(this.id).intValue()] = new SampleSet();
 			newSets[s.getValue(this.id).intValue()].addSample(s);
 		}
 		InternalNode n = new InternalNode();
@@ -77,6 +78,11 @@ public class CategoricalAttribute extends Attribute {
 			n.addChild(m);
 		}
 		return n;
+
 	}
 	
+	public CategoricalTest createTest(){
+		return new CategoricalTest(this);
+	}
+
 }

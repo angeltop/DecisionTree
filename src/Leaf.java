@@ -26,6 +26,14 @@ public class Leaf extends Node {
 	public boolean isLeaf() {
 		return true;
 	}
+	
+	public Test getTest() {
+		return null;
+	}
+
+	public void setTest(Test test) {
+		
+	}
 
 
 	/* This function creates the line that describes the attributes of the given node

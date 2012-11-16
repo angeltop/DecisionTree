@@ -107,7 +107,7 @@ public int compare(
 		}
 		//add information to the nodes for output later on.
 		m=Node.createDT(sLT);
-		m.setTestValue(new ContinuousTestValue( true));
+		m.setTestValue(new ContinuousTestValue(true));
 		n.addChild(m);
 		m =Node.createDT(sGEQ);
 		m.setTestValue(new ContinuousTestValue( false));
@@ -116,5 +116,8 @@ public int compare(
 		return n;
 	}
 
+	public Test createTest(){
+		return new ContinuousTest(this,this.splitValue);
+	}
 
 }

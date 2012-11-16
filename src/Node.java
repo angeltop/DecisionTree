@@ -12,6 +12,15 @@ public abstract class Node{
 	 */
 	private TestValue testValue;
 	private	SampleSet subSet;
+	private Test test;
+	
+	public Test getTest() {
+		return test;
+	}
+
+	public void setTest(Test test) {
+		this.test = test;
+	}
 		
 	public void setTestValue(TestValue test){
 		this.testValue = test;
@@ -26,6 +35,7 @@ public abstract class Node{
 	public SampleSet getSampleSet(){
 		return subSet;
 	}
+	
 	/**
 	 * Creates a decision Tree from the given SampleSet.
 	 * This is done using top down induction.
@@ -52,6 +62,16 @@ public abstract class Node{
 			if(deltaResult != firstResult) break;
 		}
 		if(deltaResult == firstResult) return new Leaf(firstResult);
+		if(set.getAttributes().size() ==0){
+			int pos =0, neg=0;
+			for (Sample s :set.getSamples()){
+				if (s.getResult()) pos++;
+				else neg++;
+			}
+			if(pos > neg) return new Leaf(true);
+			else return new Leaf(false);
+		}
+		
 		//Compute entropies for all attributes.
 		for(Attribute a : set.getAttributes()){
 			currentEntropy=a.computeEntropy(set);
@@ -60,8 +80,11 @@ public abstract class Node{
 				minEntropyAttribute=a;
 			}
 		}
+		
 		//split examples by the optimal attribute.
-		return minEntropyAttribute.splitData(set);
+		Node ret = minEntropyAttribute.splitData(set);
+		ret.setTest(minEntropyAttribute.createTest());
+		return ret;
 	}
 	
 	public abstract boolean isLeaf();
