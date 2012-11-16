@@ -23,8 +23,19 @@ public abstract class Attribute {
 		this.id = id;
 	}
 	
+	/**
+	 * Computes Entropy of the attribute in the exaples @set.
+	 * @param set
+	 * @return
+	 */
 	public abstract double computeEntropy(SampleSet set);
 	
+	/**
+	 * Computes the actual entropy values
+	 * @param neg #positive examples 
+	 * @param pos #negative examples
+	 * @return
+	 */
 	protected double computeEntropy(int neg, int pos){
 		double entropy =0.0;
 		int total = neg+pos;

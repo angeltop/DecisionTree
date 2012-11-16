@@ -23,10 +23,16 @@ public class CategoricalAttribute extends Attribute {
 	public String getValue(int i) {
 		return valueSet.get(i);
 	}
+	/**
+	 * Adds a new Value to the categorical attribute 
+	 * @param newValue Name of the value.
+	 * @return the index of the value. A new index is assigned if the value is not present yet.
+	 */
 	public int addValue(String newValue){
 		if(!valueSet.contains(newValue)){
-			valueSet.add(newValue);
-			return (valueSet.size()-1);
+			int index =valueSet.size();
+			valueSet.add(index,newValue);
+			return (index);
 		}
 		else{
 			return valueSet.indexOf(newValue);
@@ -45,7 +51,8 @@ public class CategoricalAttribute extends Attribute {
 		//compute Entropy.
 		for(String v: valueSet){
 			index= valueSet.indexOf(v);
-			entropy += ((pos[index]+neg[index])/set.getSamples().size())*super.computeEntropy(neg[index], pos[index]);
+			entropy += ((pos[index]+neg[index])/set.getSamples().size())
+								*super.computeEntropy(neg[index], pos[index]);
 		}
 		return entropy;
 	}
@@ -54,14 +61,16 @@ public class CategoricalAttribute extends Attribute {
 		Node m = null;
 		SampleSet[] newSets = new SampleSet[this.valueSet.size()];
 		int i;
+		// Add samples to the correct set, indexed by categorical attribute index.
 		for(Sample s : set.getSamples()){
-			newSets[valueSet.indexOf(s.getValue(this.id))].addSample(s);
+			newSets[s.getValue(this.id).intValue()].addSample(s);
 		}
 		InternalNode n = new InternalNode();
 		for (i=0;i <newSets.length; ++i){
 			for (Attribute a : set.getAttributes()){
 				if(a.id !=this.id) newSets[i].addAttribute(a);
 			}
+			//create new node and add information for output.
 			m=Node.createDT(newSets[i]);
 			m.setTestValue(new CategoricalTestValue(this.getValueSet().get(i)));
 			n.addChild(m);

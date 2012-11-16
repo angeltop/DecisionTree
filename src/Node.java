@@ -26,7 +26,12 @@ public abstract class Node{
 	public SampleSet getSampleSet(){
 		return subSet;
 	}
-
+	/**
+	 * Creates a decision Tree from the given SampleSet.
+	 * This is done using top down induction.
+	 * @param set The sample set.
+	 * @return A decision tree learned from @set.
+	 */
 	public static Node createDT(SampleSet set){
 		double currentEntropy=2.0,minEntropy =2.0;
 		Attribute minEntropyAttribute = null;
@@ -37,16 +42,17 @@ public abstract class Node{
 			firstResult=it.next().getResult();
 		}
 		else{
-			//%TODO EXCEPTION
+			//No Data given.
 			return null;
 		}
 		deltaResult=firstResult;
-		//Check if data is already splited.
+		//Check if data is already split.
 		while(it.hasNext()){
 			deltaResult=it.next().getResult();
 			if(deltaResult != firstResult) break;
 		}
 		if(deltaResult == firstResult) return new Leaf(firstResult);
+		//Compute entropies for all attributes.
 		for(Attribute a : set.getAttributes()){
 			currentEntropy=a.computeEntropy(set);
 			if(currentEntropy < minEntropy){
@@ -54,6 +60,7 @@ public abstract class Node{
 				minEntropyAttribute=a;
 			}
 		}
+		//split examples by the optimal attribute.
 		return minEntropyAttribute.splitData(set);
 	}
 	
