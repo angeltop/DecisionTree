@@ -85,6 +85,7 @@ public int compare(
 	/**
 	 * splits Data of a given sample set according to this attribute
 	 */
+
 	public Node splitData(SampleSet set){
 		SampleSet sLT = new SampleSet();
 		SampleSet sGEQ = new SampleSet();

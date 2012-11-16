@@ -58,7 +58,9 @@ public class InternalNode extends Node{
 		 * children ids
 		 */
 						 
-		if(this.getTestValue()==null)
+		if(this.getTestValue()==null && this.getTest()==null)
+			outputText = Integer.toString(id) + "\troot\t";
+		else if(this.getTest()!=null)
 			outputText = Integer.toString(id) + "\t"+ "root"+ "\t"+ this.getTest().printTest()+"\t";
 		else
 			outputText = Integer.toString(id) + "\t"+ this.getTestValue().printTestValue()+ "\t"+ this.getTest().printTest()+"\t";
@@ -73,6 +75,7 @@ public class InternalNode extends Node{
 			givenId ++;
 		}
 		outputText = outputText+"\n";
+		
 		f.write(outputText);
 		nextAvailableId = givenId;
 			

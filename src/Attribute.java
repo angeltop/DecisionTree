@@ -39,8 +39,11 @@ public abstract class Attribute {
 	protected double computeEntropy(int neg, int pos){
 		double entropy =0.0;
 		int total = neg+pos;
-		entropy = neg/total*(java.lang.Math.log(total/neg)/java.lang.Math.log(2));
-		entropy = pos/total*(java.lang.Math.log(total/pos)/java.lang.Math.log(2));
+		if(neg!=0)
+			entropy = (neg/total)*(java.lang.Math.log(total/neg)/java.lang.Math.log(2));
+		if (pos!=0)
+			entropy =  entropy + pos/total*(java.lang.Math.log(total/pos)/java.lang.Math.log(2));
+		
 		return entropy;
 	}
 	public Node splitData(SampleSet set){

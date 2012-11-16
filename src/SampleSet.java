@@ -22,6 +22,9 @@ public class SampleSet {
 	}
 	
 	public void addSample(Sample sample){
+		if(samples==null){
+			samples = new ArrayList<Sample>();
+		}
 		if(!samples.contains(sample))
 			samples.add(sample);
 	}

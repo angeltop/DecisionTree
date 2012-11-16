@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.Math;;
+
 
 
 public class CategoricalAttribute extends Attribute {
@@ -63,6 +63,7 @@ public class CategoricalAttribute extends Attribute {
 		int i;
 		// Add samples to the correct set, indexed by categorical attribute index.
 		for(Sample s : set.getSamples()){
+			newSets[s.getValue(this.id).intValue()] = new SampleSet();
 			newSets[s.getValue(this.id).intValue()].addSample(s);
 		}
 		InternalNode n = new InternalNode();
