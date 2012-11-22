@@ -82,6 +82,7 @@ public abstract class Node{
 		//split examples by the optimal attribute. 
 		Node ret = minEntropyAttribute.splitData(set);
 		ret.setTest(minEntropyAttribute.createTest());
+		ret.setTestValue(new CategoricalTestValue(null));
 		return ret;
 	}
 	

@@ -29,7 +29,7 @@ public class MainClass {
 	/**
 	 * @param args
 	 */
-	boolean pruning =true;
+	boolean pruning =false;
 	static String fileDir;
 	static JFrame mainWindow;
 	
@@ -52,10 +52,10 @@ public class MainClass {
 		
 		
 		JLabel prunning = new JLabel("Would you like to use prunning?");
-		JRadioButton yes = new JRadioButton("Yes",true);
+		JRadioButton yes = new JRadioButton("Yes",false);
 		yes.setActionCommand("yes");
 		yes.addActionListener(listener);
-		JRadioButton no = new JRadioButton("No", false);
+		JRadioButton no = new JRadioButton("No", true);
 		no.setActionCommand("no");
 		ButtonGroup gr = new ButtonGroup();
 		gr.add(yes);

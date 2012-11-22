@@ -111,14 +111,36 @@ public int compare(
 			else sGEQ.addSample(s);
 		}
 		//add information to the nodes for output later on.
-		m=Node.createDT(sLT);
-		m.setTestValue(new ContinuousTestValue(true));
-		n.addChild(m);
-		m =Node.createDT(sGEQ);
-		m.setTestValue(new ContinuousTestValue( false));
-		n.addChild(m);
-		n.setTest(new ContinuousTest(this, this.splitValue));
-		return n;
+				try{
+					m=Node.createDT(sLT);
+					m.setTestValue(new ContinuousTestValue(true));
+					n.addChild(m);
+				}
+				catch (NullPointerException e){
+					int neg=0,pos=0;
+					for(Sample t: sGEQ.getSamples()){
+						if(t.getResult()) pos++;
+						else neg ++;
+					}
+					if(pos >= neg) return new Leaf(true);
+					else return new Leaf(false);
+				}
+				try{
+					m =Node.createDT(sGEQ);
+					m.setTestValue(new ContinuousTestValue( false));
+					n.addChild(m);
+					n.setTest(new ContinuousTest(this, this.splitValue));
+					return n;
+				}
+				catch (NullPointerException e){
+					int neg=0,pos=0;
+					for(Sample t: sLT.getSamples()){
+						if(t.getResult()) pos++;
+						else neg ++;
+					}
+					if(pos >= neg) return new Leaf(true);
+					else return new Leaf(false);
+				}
 	}
 
 	public Test createTest(){
