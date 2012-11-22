@@ -47,7 +47,9 @@ public class Pruner {
 			
 			InternalNode decisionNode = (InternalNode) node;
 			Test nodeTest = decisionNode.getTest();
-			
+
+			System.out.println("Dividing pruning set based on "+ decisionNode.getTest().printTest());
+
 			/*
 			 * For tests on continuous attributes, the division is always binary.
 			 * Therefore we can divide the set into the set for which the test is true
@@ -120,23 +122,33 @@ public class Pruner {
 	 */
 	private Node pruneSubtree(Node node) {
 		if(!node.isLeaf()){
+			System.out.println("Revisiting label of leaf");
 			((Leaf) node).setResult(getMajorityClass(node.getSampleSet()));
 			return node;
 		}else{
 			InternalNode decisionNode = (InternalNode) node;
+			System.out.println("Pruning node "+ decisionNode.getTest().printTest() + ": Evaluating children");
 			List<Node> newChildren = new ArrayList<Node>();
 			for(Node child: decisionNode.getChildren()){
 				newChildren.add(pruneSubtree(child));
 			}
 			decisionNode.setChildren(newChildren);
+			
+			System.out.println("Pruning node "+decisionNode.getTest().printTest() +":");
+			
 			if(getNodeSuccessProbability(decisionNode) > getSuccessProbability(decisionNode)){
 				boolean replacementLeafResult = getMajorityClass(decisionNode.getSampleSet());
 				Leaf replacementLeaf = new Leaf(replacementLeafResult);
 				replacementLeaf.setSampleSet(decisionNode.getSampleSet());
 				replacementLeaf.setTestValue(node.getTestValue());
+				
+				System.out.println("Replacing node with new leaf");
 				return replacementLeaf;
 			}
-			else return decisionNode;
+			else{
+				System.out.println("Keeping node");
+				return decisionNode;
+			}
 		}
 	}
 
@@ -147,17 +159,18 @@ public class Pruner {
 	 * and weighted depending on the size of the child's sampleSet in comparison to the sampleSet of the parent
 	 */
 	public double getSuccessProbability(Node subtree) {
+		double successProbability = 0.0;
 		if(subtree.isLeaf()){
-			return getNodeSuccessProbability(subtree);
+			successProbability = getNodeSuccessProbability(subtree);
 		}else{
-			double successProbability=0;
 			double nodeSize = subtree.getSampleSet().getSamples().size();
 			for(Node child: ((InternalNode) subtree).getChildren()){
 				double childWeight = child.getSampleSet().getSamples().size()/nodeSize;
 				successProbability += childWeight * getSuccessProbability(child);
 			}
-			return successProbability;
 		}
+		System.out.println("Success probability of subtree is "+ successProbability);
+		return successProbability;
 	}
 	
 	/*
@@ -170,6 +183,7 @@ public class Pruner {
 	public double getNodeSuccessProbability(Node node) {
 		double trueCount=0;
 		double falseCount=0;
+		double successProbability = 0.0;
 		for(Sample s: node.getSampleSet().getSamples()){
 			if (s.getResult()){
 				trueCount++;
@@ -181,16 +195,18 @@ public class Pruner {
 		double falseProbability = falseCount/(trueCount+falseCount);
 		if(node.isLeaf()){
 			if(((Leaf) node).isResult()){
-				return trueProbability;
+				successProbability = trueProbability;
 			}else{
-				return falseProbability;
+				successProbability = falseProbability;
 			}
 		}
 		else if(trueProbability>falseProbability){
-			return trueProbability;
+			successProbability = trueProbability;
 		}else{
-			return falseProbability;
+			successProbability = falseProbability;
 		}
+		System.out.println("SuccessProbability of node is " + successProbability);
+		return successProbability;
 	}
 	
 	/*
@@ -207,6 +223,12 @@ public class Pruner {
 				falseCount++;
 			}
 		}
-		return trueCount>falseCount;
+		boolean majorityClass = trueCount>falseCount;
+		if(majorityClass){
+			System.out.println("The majority of these samples is +");
+		}else{
+			System.out.println("The majority of these samples is -");
+		}
+		return majorityClass;
 	}
 }

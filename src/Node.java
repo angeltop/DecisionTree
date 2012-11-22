@@ -3,8 +3,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.swing.JOptionPane;
-
 public abstract class Node{
 	/* In order to describe a Node we need a 
 	 * TestValue regarding the parent and

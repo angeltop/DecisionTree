@@ -14,11 +14,11 @@ public class SampleSet {
 		samples= new ArrayList<Sample>();
 	}
 	public List<Attribute> getAttributes(){
-		return new ArrayList(attributes);
+		return new ArrayList<Attribute>(attributes);
 	}
 	
 	public List<Sample> getSamples (){
-		return new ArrayList(samples);
+		return new ArrayList<Sample>(samples);
 	}
 	
 	public void addSample(Sample sample){
