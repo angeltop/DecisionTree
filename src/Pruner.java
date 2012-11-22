@@ -95,7 +95,7 @@ public class Pruner {
 					SampleSet childSet = new SampleSet();
 					childSet.setAtrributes(nodeSet.getAttributes());
 				
-					String childValue = ((CategoricalTestValue) decisionNode.getTestValue()).getValue();
+					String childValue = ((CategoricalTestValue) child.getTestValue()).getValue();
 					
 					for(Sample s: nodeSet.getSamples()){
 						if(s.getValue(decisionAttribute.getId()).equals(decisionAttribute.addValue(childValue))){
@@ -121,7 +121,7 @@ public class Pruner {
 	 * new Leaf is created and returned as the pruned subtree.
 	 */
 	private Node pruneSubtree(Node node) {
-		if(!node.isLeaf()){
+		if(node.isLeaf()){
 			System.out.println("Revisiting label of leaf");
 			((Leaf) node).setResult(getMajorityClass(node.getSampleSet()));
 			return node;
@@ -136,7 +136,12 @@ public class Pruner {
 			
 			System.out.println("Pruning node "+decisionNode.getTest().printTest() +":");
 			
-			if(getNodeSuccessProbability(decisionNode) > getSuccessProbability(decisionNode)){
+			double nodeProbability = getNodeSuccessProbability(decisionNode);
+			double subtreeProbability = getSuccessProbability(decisionNode);
+			System.out.println("Success probability of subtree is "+ subtreeProbability);
+			System.out.println("SuccessProbability at node is " + nodeProbability);
+			
+			if(nodeProbability > subtreeProbability){
 				boolean replacementLeafResult = getMajorityClass(decisionNode.getSampleSet());
 				Leaf replacementLeaf = new Leaf(replacementLeafResult);
 				replacementLeaf.setSampleSet(decisionNode.getSampleSet());
@@ -159,18 +164,17 @@ public class Pruner {
 	 * and weighted depending on the size of the child's sampleSet in comparison to the sampleSet of the parent
 	 */
 	public double getSuccessProbability(Node subtree) {
-		double successProbability = 0.0;
 		if(subtree.isLeaf()){
-			successProbability = getNodeSuccessProbability(subtree);
+			return getNodeSuccessProbability(subtree);
 		}else{
+			double successProbability = 0.0;
 			double nodeSize = subtree.getSampleSet().getSamples().size();
 			for(Node child: ((InternalNode) subtree).getChildren()){
 				double childWeight = child.getSampleSet().getSamples().size()/nodeSize;
 				successProbability += childWeight * getSuccessProbability(child);
 			}
+			return successProbability;
 		}
-		System.out.println("Success probability of subtree is "+ successProbability);
-		return successProbability;
 	}
 	
 	/*
@@ -183,7 +187,6 @@ public class Pruner {
 	public double getNodeSuccessProbability(Node node) {
 		double trueCount=0;
 		double falseCount=0;
-		double successProbability = 0.0;
 		for(Sample s: node.getSampleSet().getSamples()){
 			if (s.getResult()){
 				trueCount++;
@@ -195,18 +198,16 @@ public class Pruner {
 		double falseProbability = falseCount/(trueCount+falseCount);
 		if(node.isLeaf()){
 			if(((Leaf) node).isResult()){
-				successProbability = trueProbability;
+				return trueProbability;
 			}else{
-				successProbability = falseProbability;
+				return falseProbability;
 			}
 		}
 		else if(trueProbability>falseProbability){
-			successProbability = trueProbability;
+			return trueProbability;
 		}else{
-			successProbability = falseProbability;
+			return falseProbability;
 		}
-		System.out.println("SuccessProbability of node is " + successProbability);
-		return successProbability;
 	}
 	
 	/*
