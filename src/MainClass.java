@@ -29,7 +29,7 @@ public class MainClass {
 	/**
 	 * @param args
 	 */
-	boolean pruning;
+	boolean pruning =true;
 	static String fileDir;
 	static JFrame mainWindow;
 	
@@ -257,14 +257,19 @@ public class MainClass {
 					if(pruning){
 						SampleSet[] newSets = randomSplitForPrunning(instances);
 						Node root = Node.createDT(newSets[0]);
+						System.out.println("Before Pruning:");
+						root.prettyPrint(0);
 						Pruner pruner = new Pruner(newSets[1], root);
 						result = pruner.prune();
+						System.out.println("After pruning:");
+						result.prettyPrint(0);
 					}else{
 						
 						result = Node.createDT(instances);
+						result.prettyPrint(0);
 					}
 					result.createOutputFile(fileDir);
-					System.exit(1);
+					System.exit(0);
 					
 				} catch (IOException e) {
 

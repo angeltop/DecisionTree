@@ -87,6 +87,11 @@ public int compare(
 	 */
 
 	public Node splitData(SampleSet set){
+		System.out.print("Splitting on ContinuousAttribute ");
+		System.out.print(this.id);
+		System.out.print(" with SplitValue ");
+		System.out.print(this.splitValue);
+		System.out.println(".");
 		SampleSet sLT = new SampleSet();
 		SampleSet sGEQ = new SampleSet();
 		InternalNode n = new InternalNode();

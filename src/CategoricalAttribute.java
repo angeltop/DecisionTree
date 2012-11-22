@@ -61,6 +61,9 @@ public class CategoricalAttribute extends Attribute {
 		Node m = null;
 		SampleSet[] newSets = new SampleSet[this.valueSet.size()];
 		int i;
+		System.out.print("Splitting on CategoricalAttribute ");
+		System.out.print(this.id);
+		System.out.println(".");
 		//initialize Sets.
 		for(i=0;i<newSets.length;i++) newSets[i] = new SampleSet();
 		// Add samples to the correct set, indexed by categorical attribute index.

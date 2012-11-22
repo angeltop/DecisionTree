@@ -52,4 +52,14 @@ public class Leaf extends Node {
 		f.write(outputText);
 		return nextAvailableId; // the next available id is the same as before since no new node is found
 	}
+	
+	public void prettyPrint(int i){
+		int k;
+		for(k=0;k<=i;k++){
+			System.out.print("    ");
+		}
+		System.out.print("~~~~> ");
+		if (this.result) System.out.println("POS");
+		else System.out.println("NEG");
+	}
 }

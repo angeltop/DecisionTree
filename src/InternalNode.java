@@ -81,5 +81,32 @@ public class InternalNode extends Node{
 		}
 		return nextAvailableId;
 	}
+
+	@Override
+	public void prettyPrint(
+			int i) {
+		int k, c2=this.children.size() / 2;
+		for(k=0; k<c2;k++){
+			this.children.get(k).prettyPrint(i+2);
+		}
+		
+		for(k=0;k<=i;k++){
+			System.out.print("    ");
+		}
+		if(i==0){//We are at the root
+			System.out.print("    A_");
+			System.out.println(this.getTest().printTest());
+		}
+		else{
+			System.out.print("~~~~> ");
+			System.out.print(this.getTestValue().printTestValue());
+			System.out.print("  A_");
+			System.out.println(this.test.printTest());
+		}
+		for(k=c2; k<this.children.size();k++){
+			this.children.get(k).prettyPrint(i+2);
+		}
+		
+	}
 }
 

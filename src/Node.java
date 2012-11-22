@@ -81,7 +81,7 @@ public abstract class Node{
 			}
 		}
 		
-		//split examples by the optimal attribute.
+		//split examples by the optimal attribute. 
 		Node ret = minEntropyAttribute.splitData(set);
 		ret.setTest(minEntropyAttribute.createTest());
 		return ret;
@@ -123,4 +123,5 @@ public abstract class Node{
 	 */
 	public abstract int printNode(FileWriter f,int id, int nextAvailableId) throws IOException;
 	
+	public abstract void prettyPrint(int i);
 }
