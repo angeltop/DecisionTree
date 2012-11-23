@@ -98,10 +98,10 @@ public int compare(
 		Node m;
 		//Adding attributes to new Sets.
 		for(Attribute a: set.getAttributes()){
-			if(a.getId() != this.id){
+			//if(a.getId() != this.id){
 				sLT.addAttribute(a);
 				sGEQ.addAttribute(a);
-			}
+			//}
 		}
 		//Do the split.
 		for(Sample s:set.getSamples()){
